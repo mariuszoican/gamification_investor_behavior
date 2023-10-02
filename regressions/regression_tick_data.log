@@ -1,0 +1,781 @@
+
+  ___  ____  ____  ____  ____ ®
+ /__    /   ____/   /   ____/      17.0
+___/   /   /___/   /   /___/       MP—Parallel Edition
+
+ Statistics and Data Science       Copyright 1985-2021 StataCorp LLC
+                                   StataCorp
+                                   4905 Lakeway Drive
+                                   College Station, Texas 77845 USA
+                                   800-STATA-PC        https://www.stata.com
+                                   979-696-4600        stata@stata.com
+
+Stata license: Single-user 8-core  perpetual
+Serial number: 501706333265
+  Licensed to: Marius Zoican
+               University of Toronto
+
+Notes:
+      1. Stata is running in batch mode.
+      2. Unicode is supported; see help unicode_advice.
+      3. More than 2 billion observations are allowed; see help obs_advice.
+      4. Maximum number of variables is set to 5,000 but can be increased;
+          see help set_maxvar.
+
+. do regression_tick_data.do 
+
+. // Load data
+. // -------------------------------------
+. clear all
+
+. set more off
+
+. 
+. cd ..
+D:\Research\gamification_investor_behavior
+
+. local directory : pwd
+
+. display "`working_dir'"
+
+
+. import delimited "`directory'\data_processed\panel_tick_data"
+(encoding automatically selected: ISO-8859-1)
+(36 vars, 179,032 obs)
+
+. 
+. // encode experimental session
+. encode playerinner_name, generate(exp_session)
+
+. // // Label variables
+. // // ---------------------------------
+. egen age_std=std(playerage)
+
+. gen d_gender=(playergender=="Female")
+
+. egen finquiz_std=std(playerpayoff)
+
+. egen finknowledge_std=std(playerknowledge)
+
+. egen capital_gains_std=std(capital_gains)
+
+. egen prediction_accuracy_std=std(prediction_accuracy)
+(1,568 missing values generated)
+
+. egen filtered_prob_std=std(filtered_prob)
+
+. 
+. label variable gamified "Gamified"
+
+. label variable age_std "Age"
+
+. label variable d_gender "Gender (female)"
+
+. label variable finquiz_std "Financial quiz score"
+
+. label variable playertrading_experience "Trading experience"
+
+. label variable salient "Salient purchase price"
+
+. label variable playercourse_financial "Finance course taken"
+
+. label variable finknowledge_std "Self-assessed financial literacy"
+
+. label variable prediction_accuracy_std "Prediction accuracy"
+
+. label variable ingame_experience "In-game experience"
+
+. label variable accuracy_pred_zero "First-tick prediction"
+
+. 
+. // Define a list of controls
+. local controls salient age_std d_gender finquiz_std finknowledge_std playertr
+> ading_experience playercourse_financial prediction_accuracy_std
+
+. local controls2 salient age_std d_gender finquiz_std finknowledge_std playert
+> rading_experience playercourse_financial
+
+. 
+. gen green_alert_game=green_alert * gamified
+
+. gen red_alert_game=red_alert * gamified
+
+. 
+. 
+. gen green_alert_salient=green_alert * salient
+
+. gen red_alert_salient=red_alert * salient
+
+. 
+. gen green_alert_gs=green_alert * salient * gamified
+
+. gen red_alert_gs=red_alert * salient *gamified
+
+. 
+. gen dsell=(position_delta==-1) // generate a sell dummy
+
+. gen dbuy=(position_delta==1) // generate a buy dummy
+
+. 
+. label variable green_alert "Green alert"
+
+. label variable red_alert "Red alert"
+
+. label variable green_alert_game "Green alert $\times$ gamified"
+
+. label variable red_alert_game "Red alert $\times$ gamified"
+
+. label variable filtered_prob_std "Good state probability"
+
+. label variable capital_gains_std "Capital gains"
+
+. 
+. 
+. reghdfe dbuy green_alert green_alert_game red_alert red_alert_game filtered_p
+> rob_std  gamified `controls' if playerinner_name =="s2" & position_lag==0, ab
+> sorb(round_number) vce(cl participant_code)
+(MWFE estimator converged in 1 iterations)
+
+HDFE Linear regression                            Number of obs   =     24,553
+Absorbing 1 HDFE group                            F(  14,    316) =      52.34
+Statistics robust to heteroskedasticity           Prob > F        =     0.0000
+                                                  R-squared       =     0.1013
+                                                  Adj R-squared   =     0.1007
+                                                  Within R-sq.    =     0.1006
+Number of clusters (participant_code) =        317Root MSE        =     0.3694
+
+                     (Std. err. adjusted for 317 clusters in participant_code)
+------------------------------------------------------------------------------
+             |               Robust
+        dbuy | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+ green_alert |   .0078441   .0102481     0.77   0.445    -.0123191    .0280074
+green_aler~e |   .0267031   .0127521     2.09   0.037     .0016135    .0517928
+   red_alert |   .1632502   .0173491     9.41   0.000     .1291158    .1973845
+red_alert_~e |   .0742635   .0219729     3.38   0.001     .0310318    .1174951
+filtered_p~d |  -.0660864   .0040256   -16.42   0.000    -.0740067   -.0581661
+    gamified |   .0135769   .0073323     1.85   0.065    -.0008495    .0280032
+     salient |   .0057715   .0057163     1.01   0.313    -.0054753    .0170183
+     age_std |   .0016604   .0038317     0.43   0.665    -.0058786    .0091993
+    d_gender |  -.0371066    .014731    -2.52   0.012    -.0660899   -.0081232
+ finquiz_std |  -.0179288   .0086561    -2.07   0.039    -.0349597   -.0008979
+finknowled~d |   .0158944   .0075158     2.11   0.035     .0011072    .0306817
+playertrad~e |   .0019879   .0173336     0.11   0.909     -.032116    .0360918
+playercour~l |  -.0210754   .0170823    -1.23   0.218    -.0546849    .0125341
+prediction~d |  -.0035857   .0057914    -0.62   0.536    -.0149803    .0078088
+       _cons |   .1739754   .0137923    12.61   0.000      .146839    .2011117
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+------------------------------------------------------+
+  Absorbed FE | Categories  - Redundant  = Num. Coefs |
+--------------+---------------------------------------|
+ round_number |         4           0           4     |
+------------------------------------------------------+
+
+. outreg2 using "`directory'\tables\main_table_6.tex", adjr2 replace tex tstat 
+> label  dec(2) tdec(2) eqdrop(/) keep(*)
+D:\Research\gamification_investor_behavior\tables\main_table_6.tex
+dir : seeout
+
+. reghdfe dsell green_alert green_alert_game red_alert red_alert_game filtered_
+> prob_std capital_gains_std gamified if playerinner_name =="s2" & position_lag
+> ==1, absorb(participant_code round_number) vce(cl participant_code)
+(MWFE estimator converged in 5 iterations)
+
+HDFE Linear regression                            Number of obs   =     35,353
+Absorbing 2 HDFE groups                           F(   7,    316) =      77.76
+Statistics robust to heteroskedasticity           Prob > F        =     0.0000
+                                                  R-squared       =     0.1477
+                                                  Adj R-squared   =     0.1398
+                                                  Within R-sq.    =     0.0785
+Number of clusters (participant_code) =        317Root MSE        =     0.3185
+
+                     (Std. err. adjusted for 317 clusters in participant_code)
+------------------------------------------------------------------------------
+             |               Robust
+       dsell | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+ green_alert |   .0626132    .012249     5.11   0.000     .0385132    .0867132
+green_aler~e |   .0409529   .0162807     2.52   0.012     .0089207    .0729852
+   red_alert |   .0133714   .0068425     1.95   0.052    -.0000911     .026834
+red_alert_~e |   .0094104   .0086885     1.08   0.280    -.0076842    .0265051
+filtered_p~d |   .0288211   .0032605     8.84   0.000      .022406    .0352362
+capital_ga~d |   .0769214   .0037585    20.47   0.000     .0695266    .0843162
+    gamified |   -.000392   .0048748    -0.08   0.936    -.0099832    .0091991
+       _cons |   .1498773   .0029632    50.58   0.000     .1440473    .1557073
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+----------------------------------------------------------+
+      Absorbed FE | Categories  - Redundant  = Num. Coefs |
+------------------+---------------------------------------|
+ participant_code |       317         317           0    *|
+     round_number |         4           0           4     |
+----------------------------------------------------------+
+* = FE nested within cluster; treated as redundant for DoF computation
+
+. outreg2 using "`directory'\tables\main_table_6.tex", adjr2 append tex tstat l
+> abel  dec(2) tdec(2) eqdrop(/) keep(*)
+D:\Research\gamification_investor_behavior\tables\main_table_6.tex
+dir : seeout
+
+. 
+. reghdfe dbuy green_alert green_alert_game red_alert red_alert_game filtered_p
+> rob_std  gamified `controls2' if playerinner_name =="s2" & prediction_accurac
+> y==1 & position_lag==0, absorb(round_number) vce(cl participant_code)
+(MWFE estimator converged in 1 iterations)
+
+HDFE Linear regression                            Number of obs   =     10,977
+Absorbing 1 HDFE group                            F(  13,    271) =      34.96
+Statistics robust to heteroskedasticity           Prob > F        =     0.0000
+                                                  R-squared       =     0.0782
+                                                  Adj R-squared   =     0.0768
+                                                  Within R-sq.    =     0.0768
+Number of clusters (participant_code) =        272Root MSE        =     0.3714
+
+                     (Std. err. adjusted for 272 clusters in participant_code)
+------------------------------------------------------------------------------
+             |               Robust
+        dbuy | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+ green_alert |  -.0165588   .0117859    -1.40   0.161    -.0397623    .0066447
+green_aler~e |   .0486877   .0223151     2.18   0.030     .0047548    .0926207
+   red_alert |   .1645121   .0256197     6.42   0.000     .1140732     .214951
+red_alert_~e |   .0290001   .0363081     0.80   0.425    -.0424818     .100482
+filtered_p~d |  -.0530265   .0048465   -10.94   0.000    -.0625682   -.0434849
+    gamified |   .0305685   .0156215     1.96   0.051    -.0001864    .0613235
+     salient |  -.0026982   .0108228    -0.25   0.803    -.0240056    .0186092
+     age_std |  -.0014138   .0027544    -0.51   0.608    -.0068366     .004009
+    d_gender |  -.0272048   .0173988    -1.56   0.119    -.0614587    .0070492
+ finquiz_std |  -.0183012   .0091663    -2.00   0.047    -.0363475   -.0002549
+finknowled~d |   .0119374   .0085681     1.39   0.165     -.004931    .0288058
+playertrad~e |   .0090699   .0209016     0.43   0.665    -.0320802    .0502201
+playercour~l |  -.0150792    .020484    -0.74   0.462    -.0554072    .0252487
+       _cons |   .1647115   .0205101     8.03   0.000      .124332    .2050909
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+------------------------------------------------------+
+  Absorbed FE | Categories  - Redundant  = Num. Coefs |
+--------------+---------------------------------------|
+ round_number |         4           0           4     |
+------------------------------------------------------+
+
+. outreg2 using "`directory'\tables\main_table_6.tex", adjr2 append tex tstat l
+> abel  dec(2) tdec(2) eqdrop(/) keep(*)
+D:\Research\gamification_investor_behavior\tables\main_table_6.tex
+dir : seeout
+
+. reghdfe dsell green_alert green_alert_game red_alert red_alert_game filtered_
+> prob_std  capital_gains_std `controls2' gamified    if playerinner_name =="s2
+> " & prediction_accuracy==1 & position_lag==1, absorb(round_number) vce(cl par
+> ticipant_code)
+(MWFE estimator converged in 1 iterations)
+
+HDFE Linear regression                            Number of obs   =     15,903
+Absorbing 1 HDFE group                            F(  14,    271) =      30.94
+Statistics robust to heteroskedasticity           Prob > F        =     0.0000
+                                                  R-squared       =     0.0690
+                                                  Adj R-squared   =     0.0680
+                                                  Within R-sq.    =     0.0618
+Number of clusters (participant_code) =        272Root MSE        =     0.3264
+
+                     (Std. err. adjusted for 272 clusters in participant_code)
+------------------------------------------------------------------------------
+             |               Robust
+       dsell | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+ green_alert |   .0498598   .0174886     2.85   0.005      .015429    .0842905
+green_aler~e |   .0235419   .0244076     0.96   0.336    -.0245107    .0715944
+   red_alert |   .0042058   .0097308     0.43   0.666    -.0149519    .0233634
+red_alert_~e |   .0212793   .0150983     1.41   0.160    -.0084455    .0510041
+filtered_p~d |   .0240354   .0044381     5.42   0.000      .015298    .0327728
+capital_ga~d |    .065936   .0050301    13.11   0.000     .0560329    .0758391
+     salient |  -.0169173   .0076544    -2.21   0.028    -.0319868   -.0018477
+     age_std |   .0039581   .0041029     0.96   0.336    -.0041194    .0120357
+    d_gender |  -.0112378   .0110774    -1.01   0.311    -.0330465     .010571
+ finquiz_std |  -.0050994   .0064516    -0.79   0.430    -.0178011    .0076024
+finknowled~d |   .0040705    .005732     0.71   0.478    -.0072144    .0153554
+playertrad~e |   -.002246   .0133902    -0.17   0.867     -.028608    .0241161
+playercour~l |  -.0351752   .0138144    -2.55   0.011    -.0623725    -.007978
+    gamified |     .00894   .0103174     0.87   0.387    -.0113725    .0292525
+       _cons |   .1664315   .0138603    12.01   0.000      .139144     .193719
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+------------------------------------------------------+
+  Absorbed FE | Categories  - Redundant  = Num. Coefs |
+--------------+---------------------------------------|
+ round_number |         4           0           4     |
+------------------------------------------------------+
+
+. outreg2 using "`directory'\tables\main_table_6.tex", adjr2 append tex tstat l
+> abel  dec(2) tdec(2) eqdrop(/) keep(*)
+D:\Research\gamification_investor_behavior\tables\main_table_6.tex
+dir : seeout
+
+. 
+. reghdfe dbuy green_alert green_alert_game red_alert red_alert_game filtered_p
+> rob_std  gamified `controls' if playerinner_name =="s2" & prediction_accuracy
+> <1 & position_lag==0, absorb(round_number) vce(cl participant_code)
+(MWFE estimator converged in 1 iterations)
+
+HDFE Linear regression                            Number of obs   =     13,576
+Absorbing 1 HDFE group                            F(  14,    297) =      44.23
+Statistics robust to heteroskedasticity           Prob > F        =     0.0000
+                                                  R-squared       =     0.1286
+                                                  Adj R-squared   =     0.1275
+                                                  Within R-sq.    =     0.1265
+Number of clusters (participant_code) =        298Root MSE        =     0.3661
+
+                     (Std. err. adjusted for 298 clusters in participant_code)
+------------------------------------------------------------------------------
+             |               Robust
+        dbuy | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+ green_alert |   .0302382   .0149343     2.02   0.044     .0008477    .0596287
+green_aler~e |   .0084725   .0153295     0.55   0.581    -.0216957    .0386406
+   red_alert |   .1586616   .0228924     6.93   0.000     .1136097    .2037134
+red_alert_~e |   .1157766   .0291135     3.98   0.000     .0584818    .1730715
+filtered_p~d |   -.078695   .0055579   -14.16   0.000    -.0896328   -.0677573
+    gamified |  -.0071824    .009564    -0.75   0.453    -.0260041    .0116393
+     salient |   .0104596   .0108989     0.96   0.338    -.0109892    .0319085
+     age_std |   .0057585    .005246     1.10   0.273    -.0045655    .0160825
+    d_gender |   -.051342   .0179716    -2.86   0.005    -.0867098   -.0159742
+ finquiz_std |  -.0162588   .0106094    -1.53   0.126    -.0371379    .0046203
+finknowled~d |   .0174793   .0088995     1.96   0.050    -.0000348    .0349933
+playertrad~e |  -.0087335   .0209737    -0.42   0.677    -.0500095    .0325425
+playercour~l |   -.029202   .0210907    -1.38   0.167    -.0707082    .0123042
+prediction~d |  -.0365457   .0131071    -2.79   0.006    -.0623402   -.0107511
+       _cons |   .1578866   .0149177    10.58   0.000     .1285288    .1872443
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+------------------------------------------------------+
+  Absorbed FE | Categories  - Redundant  = Num. Coefs |
+--------------+---------------------------------------|
+ round_number |         4           0           4     |
+------------------------------------------------------+
+
+. outreg2 using "`directory'\tables\main_table_6.tex", adjr2 append tex tstat l
+> abel  dec(2) tdec(2) eqdrop(/) keep(*)
+D:\Research\gamification_investor_behavior\tables\main_table_6.tex
+dir : seeout
+
+. reghdfe dsell green_alert green_alert_game red_alert red_alert_game filtered_
+> prob_std  capital_gains_std `controls' gamified    if playerinner_name =="s2"
+>  & prediction_accuracy<1 & position_lag==1, absorb(round_number) vce(cl parti
+> cipant_code)
+(MWFE estimator converged in 1 iterations)
+
+HDFE Linear regression                            Number of obs   =     19,296
+Absorbing 1 HDFE group                            F(  15,    297) =      34.58
+Statistics robust to heteroskedasticity           Prob > F        =     0.0000
+                                                  R-squared       =     0.0996
+                                                  Adj R-squared   =     0.0987
+                                                  Within R-sq.    =     0.0973
+Number of clusters (participant_code) =        298Root MSE        =     0.3299
+
+                     (Std. err. adjusted for 298 clusters in participant_code)
+------------------------------------------------------------------------------
+             |               Robust
+       dsell | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+ green_alert |   .0728799   .0182679     3.99   0.000     .0369291    .1088308
+green_aler~e |   .0650951   .0253477     2.57   0.011     .0152112     .114979
+   red_alert |   .0261006   .0100294     2.60   0.010     .0063629    .0458384
+red_alert_~e |  -.0037828   .0112113    -0.34   0.736    -.0258464    .0182808
+filtered_p~d |   .0331942   .0045658     7.27   0.000     .0242088    .0421797
+capital_ga~d |   .0825821   .0063081    13.09   0.000      .070168    .0949963
+     salient |   .0064534   .0082064     0.79   0.432    -.0096966    .0226034
+     age_std |   .0023363   .0037555     0.62   0.534    -.0050546    .0097272
+    d_gender |  -.0553053   .0150769    -3.67   0.000    -.0849765   -.0256342
+ finquiz_std |   -.014138   .0078801    -1.79   0.074    -.0296459    .0013699
+finknowled~d |   .0061842   .0067086     0.92   0.357    -.0070182    .0193866
+playertrad~e |   .0096411   .0175397     0.55   0.583    -.0248767    .0441589
+playercour~l |  -.0546978    .017135    -3.19   0.002    -.0884192   -.0209764
+prediction~d |  -.0311466    .009746    -3.20   0.002    -.0503265   -.0119666
+    gamified |  -.0059752   .0070837    -0.84   0.400    -.0199159    .0079654
+       _cons |    .151103   .0128137    11.79   0.000     .1258858    .1763202
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+------------------------------------------------------+
+  Absorbed FE | Categories  - Redundant  = Num. Coefs |
+--------------+---------------------------------------|
+ round_number |         4           0           4     |
+------------------------------------------------------+
+
+. outreg2 using "`directory'\tables\main_table_6.tex", adjr2 append tex tstat l
+> abel  dec(2) tdec(2) eqdrop(/) keep(*)
+D:\Research\gamification_investor_behavior\tables\main_table_6.tex
+dir : seeout
+
+. 
+. 
+. 
+. // Interaction with S4
+. 
+. gen ds4=(playerinner_name=="s4")
+
+. gen green_alert_s4=green_alert*ds4
+
+. gen red_alert_s4=red_alert*ds4
+
+. gen green_alert_game_s4=green_alert_game*ds4
+
+. gen red_alert_game_s4=red_alert_game*ds4
+
+. 
+. gen ds2=(playerinner_name=="s2")
+
+. gen green_alert_s2=green_alert*ds2
+
+. gen red_alert_s2=red_alert*ds2
+
+. gen green_alert_game_s2=green_alert_game*ds2
+
+. gen red_alert_game_s2=red_alert_game*ds2
+
+. 
+. label variable green_alert_s2 "Green alert (Session II)"
+
+. label variable green_alert_s4 "Green alert (Session IV)"
+
+. label variable red_alert_s2 "Red alert (Session II)"
+
+. label variable red_alert_s4 "Red alert (Session IV)"
+
+. label variable green_alert_game_s4 "Green alert $\times$ gamified $\times$ Se
+> ssion IV"
+
+. label variable red_alert_game_s4 "Red alert $\times$ gamified $\times$ Sessio
+> n IV"
+
+. label variable green_alert_game_s2 "Green alert $\times$ gamified $\times$ Se
+> ssion II"
+
+. label variable red_alert_game_s2 "Red alert $\times$ gamified $\times$ Sessio
+> n II"
+
+. 
+. 
+. local interactions green_alert_s2 green_alert_s4 red_alert_s2 red_alert_s4 gr
+> een_alert_game_s2 red_alert_game_s2 green_alert_game_s4 red_alert_game_s4 
+
+. 
+. 
+. reghdfe dbuy `interactions'  filtered_prob_std  gamified `controls' if ((play
+> erinner_name =="s2") | (playerinner_name =="s4")) & position_lag==0, absorb(r
+> ound_number) vce(cl participant_code)
+(MWFE estimator converged in 1 iterations)
+
+HDFE Linear regression                            Number of obs   =     37,248
+Absorbing 1 HDFE group                            F(  18,    470) =      42.69
+Statistics robust to heteroskedasticity           Prob > F        =     0.0000
+                                                  R-squared       =     0.0782
+                                                  Adj R-squared   =     0.0777
+                                                  Within R-sq.    =     0.0767
+Number of clusters (participant_code) =        471Root MSE        =     0.3676
+
+                     (Std. err. adjusted for 471 clusters in participant_code)
+------------------------------------------------------------------------------
+             |               Robust
+        dbuy | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+green_a~t_s2 |   .0031905   .0109404     0.29   0.771    -.0183076    .0246887
+green_a~t_s4 |  -.0703238   .0126551    -5.56   0.000    -.0951914   -.0454562
+red_alert_s2 |   .1589293    .017421     9.12   0.000     .1246965     .193162
+red_alert_s4 |   .0711417   .0205743     3.46   0.001     .0307128    .1115706
+green_a~e_s2 |   .0345417   .0130999     2.64   0.009     .0088001    .0602834
+red_ale~e_s2 |   .0813175   .0218426     3.72   0.000     .0383963    .1242388
+green_a~e_s4 |   .0136833   .0171376     0.80   0.425    -.0199924    .0473591
+red_ale~e_s4 |   .0507689   .0296754     1.71   0.088     -.007544    .1090817
+filtered_p~d |  -.0665376   .0040258   -16.53   0.000    -.0744484   -.0586269
+    gamified |   .0062511   .0062329     1.00   0.316    -.0059967    .0184988
+     salient |   .0123496   .0053522     2.31   0.021     .0018323    .0228669
+     age_std |   .0044885    .005661     0.79   0.428    -.0066354    .0156124
+    d_gender |  -.0173475   .0135179    -1.28   0.200    -.0439105    .0092155
+ finquiz_std |  -.0273629   .0084961    -3.22   0.001    -.0440579   -.0106679
+finknowled~d |   .0241916   .0069257     3.49   0.001     .0105826    .0378007
+playertrad~e |  -.0082574   .0153948    -0.54   0.592    -.0385085    .0219937
+playercour~l |   .0088185   .0197391     0.45   0.655    -.0299694    .0476064
+prediction~d |  -.0071692   .0056054    -1.28   0.202     -.018184    .0038456
+       _cons |   .1645952   .0126809    12.98   0.000     .1396769    .1895136
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+------------------------------------------------------+
+  Absorbed FE | Categories  - Redundant  = Num. Coefs |
+--------------+---------------------------------------|
+ round_number |         4           0           4     |
+------------------------------------------------------+
+
+. outreg2 using "`directory'\tables\appendix_table_F7.tex", adjr2 replace tex t
+> stat label  dec(2) tdec(2) eqdrop(/) keep(*)
+D:\Research\gamification_investor_behavior\tables\appendix_table_F7.tex
+dir : seeout
+
+. reghdfe dsell `interactions' filtered_prob_std  capital_gains_std `controls' 
+> gamified    if ((playerinner_name =="s2") | (playerinner_name =="s4")) & posi
+> tion_lag==1, absorb(round_number) vce(cl participant_code)
+(MWFE estimator converged in 1 iterations)
+
+HDFE Linear regression                            Number of obs   =     51,064
+Absorbing 1 HDFE group                            F(  19,    470) =      44.77
+Statistics robust to heteroskedasticity           Prob > F        =     0.0000
+                                                  R-squared       =     0.0739
+                                                  Adj R-squared   =     0.0735
+                                                  Within R-sq.    =     0.0698
+Number of clusters (participant_code) =        471Root MSE        =     0.3345
+
+                     (Std. err. adjusted for 471 clusters in participant_code)
+------------------------------------------------------------------------------
+             |               Robust
+       dsell | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+green_a~t_s2 |   .0552374   .0124887     4.42   0.000     .0306968    .0797779
+green_a~t_s4 |   .0629318   .0189561     3.32   0.001     .0256826     .100181
+red_alert_s2 |   .0070729   .0074726     0.95   0.344    -.0076108    .0217567
+red_alert_s4 |   .0090821   .0152129     0.60   0.551    -.0208115    .0389758
+green_a~e_s2 |   .0450692   .0162699     2.77   0.006     .0130984    .0770399
+red_ale~e_s2 |   .0126312   .0092866     1.36   0.174    -.0056172    .0308796
+green_a~e_s4 |   .0859345    .022499     3.82   0.000     .0417233    .1301456
+red_ale~e_s4 |  -.0204748   .0191874    -1.07   0.286    -.0581785    .0172289
+filtered_p~d |   .0322464    .003582     9.00   0.000     .0252078    .0392851
+capital_ga~d |   .0671057   .0029882    22.46   0.000     .0612339    .0729775
+     salient |  -.0024316   .0039614    -0.61   0.540    -.0102159    .0053526
+     age_std |   .0055722   .0051041     1.09   0.276    -.0044574    .0156019
+    d_gender |   -.025667   .0103137    -2.49   0.013    -.0459337   -.0054003
+ finquiz_std |  -.0156492   .0061374    -2.55   0.011    -.0277093   -.0035891
+finknowled~d |   .0141422   .0049176     2.88   0.004      .004479    .0238054
+playertrad~e |  -.0076794   .0114519    -0.67   0.503    -.0301826    .0148237
+playercour~l |  -.0119358   .0145136    -0.82   0.411    -.0404554    .0165837
+prediction~d |  -.0056932   .0040407    -1.41   0.160    -.0136333    .0022468
+    gamified |   -.000785    .004367    -0.18   0.857    -.0093662    .0077962
+       _cons |    .173981   .0103297    16.84   0.000     .1536828    .1942792
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+------------------------------------------------------+
+  Absorbed FE | Categories  - Redundant  = Num. Coefs |
+--------------+---------------------------------------|
+ round_number |         4           0           4     |
+------------------------------------------------------+
+
+. outreg2 using "`directory'\tables\appendix_table_F7.tex", adjr2 append tex ts
+> tat label  dec(2) tdec(2) eqdrop(/) keep(*)
+D:\Research\gamification_investor_behavior\tables\appendix_table_F7.tex
+dir : seeout
+
+. 
+. reghdfe dbuy `interactions'  filtered_prob_std  gamified `controls2' if ((pla
+> yerinner_name =="s2") | (playerinner_name =="s4")) & position_lag==0 & predic
+> tion_accuracy==1, absorb(round_number) vce(cl participant_code)
+(MWFE estimator converged in 1 iterations)
+
+HDFE Linear regression                            Number of obs   =     12,857
+Absorbing 1 HDFE group                            F(  17,    312) =      24.57
+Statistics robust to heteroskedasticity           Prob > F        =     0.0000
+                                                  R-squared       =     0.0685
+                                                  Adj R-squared   =     0.0671
+                                                  Within R-sq.    =     0.0681
+Number of clusters (participant_code) =        313Root MSE        =     0.3709
+
+                     (Std. err. adjusted for 313 clusters in participant_code)
+------------------------------------------------------------------------------
+             |               Robust
+        dbuy | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+green_a~t_s2 |  -.0201291   .0131874    -1.53   0.128    -.0460766    .0058183
+green_a~t_s4 |  -.0323025   .0452814    -0.71   0.476    -.1213979     .056793
+red_alert_s2 |   .1622651   .0255756     6.34   0.000     .1119425    .2125876
+red_alert_s4 |   .0833959    .048361     1.72   0.086     -.011759    .1785509
+green_a~e_s2 |   .0575552   .0230938     2.49   0.013      .012116    .1029944
+red_ale~e_s2 |   .0379306   .0360795     1.05   0.294    -.0330594    .1089206
+green_a~e_s4 |  -.0256817   .0619484    -0.41   0.679    -.1475712    .0962079
+red_ale~e_s4 |   .0633383   .0706766     0.90   0.371    -.0757247    .2024013
+filtered_p~d |  -.0531175   .0048257   -11.01   0.000    -.0626126   -.0436224
+    gamified |   .0234419   .0149222     1.57   0.117    -.0059191    .0528028
+     salient |   .0008387   .0109757     0.08   0.939    -.0207571    .0224345
+     age_std |  -.0005494   .0032724    -0.17   0.867    -.0069882    .0058893
+    d_gender |  -.0055072   .0179889    -0.31   0.760    -.0409021    .0298878
+ finquiz_std |  -.0163077   .0105734    -1.54   0.124    -.0371119    .0044966
+finknowled~d |   .0150587   .0092221     1.63   0.104    -.0030867    .0332041
+playertrad~e |  -.0170857   .0229986    -0.74   0.458    -.0623375    .0281662
+playercour~l |   -.001161   .0204631    -0.06   0.955    -.0414241    .0391021
+       _cons |   .1630512   .0183804     8.87   0.000     .1268861    .1992164
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+------------------------------------------------------+
+  Absorbed FE | Categories  - Redundant  = Num. Coefs |
+--------------+---------------------------------------|
+ round_number |         4           0           4     |
+------------------------------------------------------+
+
+. outreg2 using "`directory'\tables\appendix_table_F7.tex", adjr2 append tex ts
+> tat label  dec(2) tdec(2) eqdrop(/) keep(*)
+D:\Research\gamification_investor_behavior\tables\appendix_table_F7.tex
+dir : seeout
+
+. reghdfe dsell `interactions' filtered_prob_std  capital_gains_std `controls2'
+>  gamified    if ((playerinner_name =="s2") | (playerinner_name =="s4")) & pos
+> ition_lag==1 & prediction_accuracy==1, absorb(round_number) vce(cl participan
+> t_code)
+(MWFE estimator converged in 1 iterations)
+
+HDFE Linear regression                            Number of obs   =     18,111
+Absorbing 1 HDFE group                            F(  18,    312) =      27.53
+Statistics robust to heteroskedasticity           Prob > F        =     0.0000
+                                                  R-squared       =     0.0680
+                                                  Adj R-squared   =     0.0669
+                                                  Within R-sq.    =     0.0610
+Number of clusters (participant_code) =        313Root MSE        =     0.3298
+
+                     (Std. err. adjusted for 313 clusters in participant_code)
+------------------------------------------------------------------------------
+             |               Robust
+       dsell | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+green_a~t_s2 |   .0453198   .0173087     2.62   0.009     .0112632    .0793765
+green_a~t_s4 |   .1077757    .039171     2.75   0.006      .030703    .1848485
+red_alert_s2 |  -.0004619   .0100442    -0.05   0.963    -.0202248    .0193011
+red_alert_s4 |   -.005246      .0377    -0.14   0.889    -.0794243    .0689323
+green_a~e_s2 |   .0257316     .02425     1.06   0.289    -.0219826    .0734458
+red_ale~e_s2 |   .0227109   .0155206     1.46   0.144    -.0078274    .0532491
+green_a~e_s4 |  -.0062814   .0577151    -0.11   0.913    -.1198414    .1072787
+red_ale~e_s4 |   .0367041    .051061     0.72   0.473    -.0637633    .1371716
+filtered_p~d |   .0240633   .0043504     5.53   0.000     .0155035    .0326231
+capital_ga~d |     .06599   .0043304    15.24   0.000     .0574696    .0745105
+     salient |  -.0184104    .007566    -2.43   0.016    -.0332972   -.0035236
+     age_std |   .0054822   .0050386     1.09   0.277    -.0044318    .0153962
+    d_gender |  -.0030945   .0115286    -0.27   0.789    -.0257781    .0195891
+ finquiz_std |  -.0048498   .0063033    -0.77   0.442    -.0172522    .0075525
+finknowled~d |   .0060222   .0057882     1.04   0.299    -.0053667    .0174111
+playertrad~e |  -.0178824   .0141701    -1.26   0.208    -.0457634    .0099986
+playercour~l |  -.0263965   .0133874    -1.97   0.050    -.0527375   -.0000555
+    gamified |   .0065167    .009924     0.66   0.512    -.0130097    .0260431
+       _cons |   .1737667   .0132527    13.11   0.000     .1476907    .1998427
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+------------------------------------------------------+
+  Absorbed FE | Categories  - Redundant  = Num. Coefs |
+--------------+---------------------------------------|
+ round_number |         4           0           4     |
+------------------------------------------------------+
+
+. outreg2 using "`directory'\tables\appendix_table_F7.tex", adjr2 append tex ts
+> tat label  dec(2) tdec(2) eqdrop(/) keep(*)
+D:\Research\gamification_investor_behavior\tables\appendix_table_F7.tex
+dir : seeout
+
+. 
+. reghdfe dbuy `interactions'  filtered_prob_std  gamified `controls' if ((play
+> erinner_name =="s2") | (playerinner_name =="s4")) & position_lag==0 & predict
+> ion_accuracy<1, absorb(round_number) vce(cl participant_code)
+(MWFE estimator converged in 1 iterations)
+
+HDFE Linear regression                            Number of obs   =     24,391
+Absorbing 1 HDFE group                            F(  18,    445) =      35.63
+Statistics robust to heteroskedasticity           Prob > F        =     0.0000
+                                                  R-squared       =     0.0886
+                                                  Adj R-squared   =     0.0878
+                                                  Within R-sq.    =     0.0851
+Number of clusters (participant_code) =        446Root MSE        =     0.3650
+
+                     (Std. err. adjusted for 446 clusters in participant_code)
+------------------------------------------------------------------------------
+             |               Robust
+        dbuy | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+green_a~t_s2 |     .02334   .0151051     1.55   0.123    -.0063463    .0530262
+green_a~t_s4 |  -.0772382   .0122242    -6.32   0.000    -.1012626   -.0532139
+red_alert_s2 |   .1528671   .0227877     6.71   0.000     .1080822    .1976519
+red_alert_s4 |   .0700012    .022448     3.12   0.002     .0258839    .1141185
+green_a~e_s2 |   .0090363   .0157532     0.57   0.567    -.0219236    .0399962
+red_ale~e_s2 |    .116192   .0287949     4.04   0.000     .0596012    .1727828
+green_a~e_s4 |   .0265303   .0176639     1.50   0.134    -.0081846    .0612453
+red_ale~e_s4 |     .05523   .0323909     1.71   0.089    -.0084281     .118888
+filtered_p~d |  -.0785536   .0055361   -14.19   0.000    -.0894338   -.0676733
+    gamified |  -.0020306   .0078839    -0.26   0.797    -.0175249    .0134637
+     salient |   .0164316   .0080229     2.05   0.041     .0006641     .032199
+     age_std |   .0096427   .0077067     1.25   0.212    -.0055034    .0247888
+    d_gender |  -.0226639   .0162984    -1.39   0.165    -.0546953    .0093675
+ finquiz_std |  -.0313928   .0103913    -3.02   0.003    -.0518148   -.0109707
+finknowled~d |   .0286134   .0081681     3.50   0.001     .0125604    .0446663
+playertrad~e |  -.0058204   .0180266    -0.32   0.747    -.0412482    .0296073
+playercour~l |   .0106982    .025351     0.42   0.673    -.0391244    .0605208
+prediction~d |  -.0145553   .0109166    -1.33   0.183    -.0360097    .0068991
+       _cons |    .157894   .0160849     9.82   0.000     .1262821    .1895058
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+------------------------------------------------------+
+  Absorbed FE | Categories  - Redundant  = Num. Coefs |
+--------------+---------------------------------------|
+ round_number |         4           0           4     |
+------------------------------------------------------+
+
+. outreg2 using "`directory'\tables\appendix_table_F7.tex", adjr2 append tex ts
+> tat label  dec(2) tdec(2) eqdrop(/) keep(*)
+D:\Research\gamification_investor_behavior\tables\appendix_table_F7.tex
+dir : seeout
+
+. reghdfe dsell `interactions' filtered_prob_std  capital_gains_std `controls' 
+> gamified    if ((playerinner_name =="s2") | (playerinner_name =="s4")) & posi
+> tion_lag==1 & prediction_accuracy<1, absorb(round_number) vce(cl participant_
+> code)
+(MWFE estimator converged in 1 iterations)
+
+HDFE Linear regression                            Number of obs   =     32,953
+Absorbing 1 HDFE group                            F(  19,    445) =      35.17
+Statistics robust to heteroskedasticity           Prob > F        =     0.0000
+                                                  R-squared       =     0.0815
+                                                  Adj R-squared   =     0.0809
+                                                  Within R-sq.    =     0.0788
+Number of clusters (participant_code) =        446Root MSE        =     0.3364
+
+                     (Std. err. adjusted for 446 clusters in participant_code)
+------------------------------------------------------------------------------
+             |               Robust
+       dsell | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+green_a~t_s2 |    .061713   .0182277     3.39   0.001     .0258899     .097536
+green_a~t_s4 |   .0554523   .0195521     2.84   0.005     .0170265    .0938782
+red_alert_s2 |   .0152926   .0101844     1.50   0.134    -.0047229     .035308
+red_alert_s4 |   .0123046   .0154469     0.80   0.426    -.0180533    .0426624
+green_a~e_s2 |   .0680859   .0250081     2.72   0.007     .0189372    .1172346
+red_ale~e_s2 |  -.0012908    .011112    -0.12   0.908    -.0231294    .0205478
+green_a~e_s4 |   .1029102   .0238553     4.31   0.000     .0560271    .1497933
+red_ale~e_s4 |  -.0272175    .020908    -1.30   0.194    -.0683083    .0138732
+filtered_p~d |    .039501    .004599     8.59   0.000     .0304626    .0485395
+capital_ga~d |   .0685262   .0036696    18.67   0.000     .0613144    .0757381
+     salient |   .0041646   .0063127     0.66   0.510    -.0082419     .016571
+     age_std |   .0052449   .0054249     0.97   0.334    -.0054167    .0159066
+    d_gender |  -.0374298   .0130055    -2.88   0.004    -.0629897     -.01187
+ finquiz_std |  -.0203938   .0077181    -2.64   0.009    -.0355622   -.0052254
+finknowled~d |   .0186462   .0060447     3.08   0.002     .0067665     .030526
+playertrad~e |  -.0034023   .0139356    -0.24   0.807    -.0307901    .0239855
+playercour~l |  -.0090387   .0193654    -0.47   0.641    -.0470977    .0290203
+prediction~d |  -.0080295   .0090972    -0.88   0.378    -.0259083    .0098494
+    gamified |  -.0034073   .0058102    -0.59   0.558    -.0148262    .0080117
+       _cons |   .1703471   .0134672    12.65   0.000     .1438799    .1968144
+------------------------------------------------------------------------------
+
+Absorbed degrees of freedom:
+------------------------------------------------------+
+  Absorbed FE | Categories  - Redundant  = Num. Coefs |
+--------------+---------------------------------------|
+ round_number |         4           0           4     |
+------------------------------------------------------+
+
+. outreg2 using "`directory'\tables\appendix_table_F7.tex", adjr2 append tex ts
+> tat label  dec(2) tdec(2) eqdrop(/) keep(*)
+D:\Research\gamification_investor_behavior\tables\appendix_table_F7.tex
+dir : seeout
+
+. 
+end of do-file
