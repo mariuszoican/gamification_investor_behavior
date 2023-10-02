@@ -44,9 +44,6 @@ D:\Research\gamification_investor_behavior
 (21 vars, 951 obs)
 
 . save "`directory'\data_processed\self_reflection.dta", replace
-(file
-    D:\Research\gamification_investor_behavior\data_processed\self_reflection
-    > .dta not found)
 file
     D:\Research\gamification_investor_behavior\data_processed\self_reflection
     > .dta saved
@@ -58,9 +55,6 @@ file
 (13 vars, 963 obs)
 
 . save "`directory'\data_processed\jackknife_finquiz.dta", replace
-(file
-    D:\Research\gamification_investor_behavior\data_processed\jackknife_finqu
-    > iz.dta not found)
 file
     D:\Research\gamification_investor_behavior\data_processed\jackknife_finqu
     > iz.dta saved
