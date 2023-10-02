@@ -41,5 +41,6 @@
    1. Run with argument `regression_trader_round.do` to generate trader-round tables in `tables` folder: Tables 4, 5, and 7 in the main paper; Tables F1, F2, F3, F4, F5, F6 in the Online Appendix.
    2. Run with argument `regression_trader_panel.do` to generate trader panel tables: Table 3 in the main paper and Table H1 in the Online Appendix.
    3. Run with argument `regression_tick_data.do` to generate tick-level panel tables: Table 6 in the main paper and Table F7 in the Online Appendix.
-   4. Run with argument `regression_quiz_jackknife.do` to generate Table H.7 with jack-knife measure of the financial quiz score.
+   4. Run with argument `regression_robustness_H2_H6.do` to generate robustness Tables H2 through H6 in the Online Appendix.
+   5. Run with argument `regression_quiz_jackknife.do` to generate Table H.7 with jack-knife measure of the financial quiz score.
    

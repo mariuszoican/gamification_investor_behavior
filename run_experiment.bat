@@ -42,5 +42,8 @@ python execute_stata.py "regression_trader_panel.do"
 echo Generate tables with tick-level data
 python execute_stata.py "regression_tick_data.do"
 
+echo Generate robustness tables H2 to H6
+python execute_stata.py "regression_robustness_H2_H6.do"
+
 echo Generate tables with jack-knife samples for financial quiz questions (Table H.7)
 python execute_stata.py "regression_quiz_jackknife.do"

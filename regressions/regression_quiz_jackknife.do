@@ -12,8 +12,8 @@ clear
 import delimited "`directory'\data_processed\jackknife_finquiz.csv"
 save "`directory'\data_processed\jackknife_finquiz.dta", replace
 
-use self_reflection.dta, clear
-merge m:1 participant_code using jackknife_finquiz.dta
+use "`directory'\data_processed\self_reflection.dta", clear
+merge m:1 participant_code using "`directory'\data_processed\jackknife_finquiz.dta"
 
 egen age_std=std(playerage)
 gen d_gender=(playergender=="Female")
