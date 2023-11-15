@@ -1,28 +1,20 @@
-// requirements.do
-// Checks for required packages and installs them if not present
-
-// Function to check and install package
 capture program drop check_and_install
 program define check_and_install
     syntax anything
-    local pkg `anything'
-    qui findit `pkg', all
-    if r(rc) {
-        // Package not installed, install it
-        display "Installing `pkg'..."
-        ssc install `pkg', replace
+    local pkg_name `anything'
+    local pkg_command `pkg_name' // Assuming the package name is the same as its command
+
+    capture qui which `pkg_command'
+    local rc = _rc
+
+    if `rc' != 0 {
+        display "Installing `pkg_name'..."
+        ssc install `pkg_name', replace
     }
     else {
-        // Package is installed
-        display "`pkg' is already installed."
+        display "`pkg_name' is already installed."
     }
 end
-
-// Check and install 'reghdfe'
-check_and_install reghdfe
-
-// Check and install 'ftools'
-check_and_install ftools
-
-// Check and install outreg2
 check_and_install outreg2
+check_and_install reghdfe
+check_and_install ftools
