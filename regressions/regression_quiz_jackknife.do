@@ -6,14 +6,14 @@ set more off
 cd ..
 local directory : pwd
 display "`working_dir'"
-import delimited "`directory'\data_processed\self_reflection"
-save "`directory'\data_processed\self_reflection.dta", replace
+import delimited "`directory'/data_processed/self_reflection"
+save "`directory'/data_processed/self_reflection.dta", replace
 clear
-import delimited "`directory'\data_processed\jackknife_finquiz.csv"
-save "`directory'\data_processed\jackknife_finquiz.dta", replace
+import delimited "`directory'/data_processed/jackknife_finquiz.csv"
+save "`directory'/data_processed/jackknife_finquiz.dta", replace
 
-use "`directory'\data_processed\self_reflection.dta", clear
-merge m:1 participant_code using "`directory'\data_processed\jackknife_finquiz.dta"
+use "`directory'/data_processed/self_reflection.dta", clear
+merge m:1 participant_code using "`directory'/data_processed/jackknife_finquiz.dta"
 
 egen age_std=std(playerage)
 gen d_gender=(playergender=="Female")
@@ -65,7 +65,7 @@ gen temp_score=finquiz_std
 label variable temp_score "Financial quiz score"
 
 reghdfe prefer_gamified  `controls' temp_score if playerinner_name=="s1", noabsorb vce(cl participant_code)
-outreg2 using "`directory'\tables\appendix_table_H7.tex", r2 replace tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
+outreg2 using "`directory'/tables/appendix_table_H7.tex", r2 replace tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
 
 drop temp_score
 
@@ -73,7 +73,7 @@ foreach var of varlist finquiz_q1_std finquiz_q2_std finquiz_q3_std finquiz_q4_s
 	gen temp_score=`var'
 	label variable temp_score "Financial quiz score"
     reghdfe prefer_gamified  `controls' temp_score if playerinner_name=="s1", noabsorb vce(cl participant_code)
-    outreg2 using "`directory'\tables\appendix_table_H7.tex", r2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
+    outreg2 using "`directory'/tables/appendix_table_H7.tex", r2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
 	drop temp_score
 }
 
