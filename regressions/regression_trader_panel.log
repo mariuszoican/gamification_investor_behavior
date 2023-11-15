@@ -1,7 +1,7 @@
 
   ___  ____  ____  ____  ____ ®
  /__    /   ____/   /   ____/      17.0
-___/   /   /___/   /   /___/       MP—Parallel Edition
+___/   /   /___/   /   /___/       SE—Standard Edition
 
  Statistics and Data Science       Copyright 1985-2021 StataCorp LLC
                                    StataCorp
@@ -10,17 +10,16 @@ ___/   /   /___/   /   /___/       MP—Parallel Edition
                                    800-STATA-PC        https://www.stata.com
                                    979-696-4600        stata@stata.com
 
-Stata license: Single-user 8-core  perpetual
-Serial number: 501706333265
-  Licensed to: Marius Zoican
-               University of Toronto
+Stata license: Single-user  perpetual
+Serial number: 401706324661
+  Licensed to: Institute for Applied Microeconomics
+               University of Bonn
 
 Notes:
       1. Stata is running in batch mode.
       2. Unicode is supported; see help unicode_advice.
-      3. More than 2 billion observations are allowed; see help obs_advice.
-      4. Maximum number of variables is set to 5,000 but can be increased;
-          see help set_maxvar.
+      3. Maximum number of variables is set to 5,000 but can be increased; see help
+          set_maxvar.
 
 . do regression_trader_panel.do 
 
@@ -32,14 +31,14 @@ Notes:
 
 . 
 . cd ..
-D:\Research\gamification_investor_behavior
+/Users/chapkovski/Documents/gamification_investor_behavior
 
 . local directory : pwd
 
 . display "`working_dir'"
 
 
-. import delimited "`directory'\data_processed\self_reflection"
+. import delimited "`directory'/data_processed/self_reflection"
 (encoding automatically selected: ISO-8859-1)
 (21 vars, 951 obs)
 
@@ -56,15 +55,14 @@ D:\Research\gamification_investor_behavior
 
 . gen better_gamified=(playersr_better_decs=="Design 2")
 
-. gen diff_payoff_pct=10000*(profit_gamified-profit_nongamified)/profit_nongami
-> fied
+. gen diff_payoff_pct=10000*(profit_gamified-profit_nongamified)/profit_nongamified
 (67 missing values generated)
 
 . egen diff_payoff=std(diff_payoff_pct)
 (67 missing values generated)
 
-. gen option_value=(playersr_better_have_option=="Have an option between Design
->  #1 and Design #2,")
+. gen option_value=(playersr_better_have_option=="Have an option between Design #1 and Design #
+> 2,")
 
 . 
 . 
@@ -90,13 +88,13 @@ D:\Research\gamification_investor_behavior
 . label variable prediction_accuracy_mean_std "Prediction accuracy"
 
 . 
-. local controls finquiz_std age_std d_gender finknowledge_std playertrading_ex
-> perience playercourse_financial prediction_accuracy_mean_std diff_payoff
+. local controls finquiz_std age_std d_gender finknowledge_std playertrading_experience playerc
+> ourse_financial prediction_accuracy_mean_std diff_payoff
 
 . 
 . // Table 3
-. reghdfe prefer_gamified  `controls' if playerinner_name=="s1", noabsorb vce(c
-> l participant_code)
+. reghdfe prefer_gamified  `controls' if playerinner_name=="s1", noabsorb vce(cl participant_co
+> de)
 (MWFE estimator converged in 1 iterations)
 
 HDFE Linear regression                            Number of obs   =        291
@@ -107,29 +105,29 @@ Statistics robust to heteroskedasticity           Prob > F        =     0.0100
                                                   Within R-sq.    =     0.0517
 Number of clusters (participant_code) =        291Root MSE        =     0.4914
 
-                     (Std. err. adjusted for 291 clusters in participant_code)
-------------------------------------------------------------------------------
-             |               Robust
-prefer_gam~d | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
--------------+----------------------------------------------------------------
- finquiz_std |  -.0913894   .0314262    -2.91   0.004    -.1532492   -.0295296
-     age_std |   .0263756   .0507198     0.52   0.603    -.0734619    .1262131
-    d_gender |   .0820581   .0600542     1.37   0.173    -.0361533    .2002694
-finknowled~d |   .0085187   .0342323     0.25   0.804    -.0588645    .0759019
-playertrad~e |   .0172365   .0671406     0.26   0.798    -.1149239    .1493969
-playercour~l |   .0790272   .0849337     0.93   0.353    -.0881573    .2462118
-prediction~d |   -.017654    .028672    -0.62   0.539    -.0740922    .0387843
- diff_payoff |   .0502652    .024778     2.03   0.043     .0014919    .0990386
-       _cons |   .3813147   .0560285     6.81   0.000     .2710276    .4916018
-------------------------------------------------------------------------------
+                                     (Std. err. adjusted for 291 clusters in participant_code)
+----------------------------------------------------------------------------------------------
+                             |               Robust
+             prefer_gamified | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-----------------------------+----------------------------------------------------------------
+                 finquiz_std |  -.0913894   .0314262    -2.91   0.004    -.1532492   -.0295296
+                     age_std |   .0263756   .0507198     0.52   0.603    -.0734619    .1262131
+                    d_gender |   .0820581   .0600542     1.37   0.173    -.0361533    .2002694
+            finknowledge_std |   .0085187   .0342323     0.25   0.804    -.0588645    .0759019
+    playertrading_experience |   .0172365   .0671406     0.26   0.798    -.1149239    .1493969
+      playercourse_financial |   .0790272   .0849337     0.93   0.353    -.0881573    .2462118
+prediction_accuracy_mean_std |   -.017654    .028672    -0.62   0.539    -.0740922    .0387843
+                 diff_payoff |   .0502652    .024778     2.03   0.043     .0014919    .0990386
+                       _cons |   .3813147   .0560285     6.81   0.000     .2710276    .4916018
+----------------------------------------------------------------------------------------------
 
-. outreg2 using "`directory'\tables\main_table_3.tex", r2 replace tex tstat lab
-> el  dec(2) tdec(2) eqdrop(/) keep(*)
-D:\Research\gamification_investor_behavior\tables\main_table_3.tex
+. outreg2 using "`directory'/tables/main_table_3.tex", r2 replace tex tstat label  dec(2) tdec(
+> 2) eqdrop(/) keep(*)
+/Users/chapkovski/Documents/gamification_investor_behavior/tables/main_table_3.tex
 dir : seeout
 
-. reghdfe prefer_gamified  `controls' if playerinner_name=="s2", noabsorb vce(c
-> l participant_code)
+. reghdfe prefer_gamified  `controls' if playerinner_name=="s2", noabsorb vce(cl participant_co
+> de)
 (MWFE estimator converged in 1 iterations)
 
 HDFE Linear regression                            Number of obs   =        297
@@ -140,29 +138,29 @@ Statistics robust to heteroskedasticity           Prob > F        =     0.5819
                                                   Within R-sq.    =     0.0202
 Number of clusters (participant_code) =        297Root MSE        =     0.4919
 
-                     (Std. err. adjusted for 297 clusters in participant_code)
-------------------------------------------------------------------------------
-             |               Robust
-prefer_gam~d | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
--------------+----------------------------------------------------------------
- finquiz_std |   .0138157   .0327744     0.42   0.674     -.050692    .0783233
-     age_std |   .0094268   .0100935     0.93   0.351    -.0104396    .0292933
-    d_gender |   .0813688   .0627344     1.30   0.196    -.0421073    .2048448
-finknowled~d |  -.0202653   .0337857    -0.60   0.549    -.0867635     .046233
-playertrad~e |  -.0135077   .0687073    -0.20   0.844    -.1487398    .1217244
-playercour~l |   .0997181   .0809198     1.23   0.219    -.0595511    .2589874
-prediction~d |   .0085181    .031464     0.27   0.787    -.0534105    .0704466
- diff_payoff |   .0465597   .0339808     1.37   0.172    -.0203224    .1134419
-       _cons |   .5471834   .0573871     9.53   0.000     .4342321    .6601347
-------------------------------------------------------------------------------
+                                     (Std. err. adjusted for 297 clusters in participant_code)
+----------------------------------------------------------------------------------------------
+                             |               Robust
+             prefer_gamified | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-----------------------------+----------------------------------------------------------------
+                 finquiz_std |   .0138157   .0327744     0.42   0.674     -.050692    .0783233
+                     age_std |   .0094268   .0100935     0.93   0.351    -.0104396    .0292933
+                    d_gender |   .0813688   .0627344     1.30   0.196    -.0421073    .2048448
+            finknowledge_std |  -.0202653   .0337857    -0.60   0.549    -.0867635     .046233
+    playertrading_experience |  -.0135077   .0687073    -0.20   0.844    -.1487398    .1217244
+      playercourse_financial |   .0997181   .0809198     1.23   0.219    -.0595511    .2589874
+prediction_accuracy_mean_std |   .0085181    .031464     0.27   0.787    -.0534105    .0704466
+                 diff_payoff |   .0465597   .0339808     1.37   0.172    -.0203224    .1134419
+                       _cons |   .5471834   .0573871     9.53   0.000     .4342321    .6601347
+----------------------------------------------------------------------------------------------
 
-. outreg2 using "`directory'\tables\main_table_3.tex", r2 append tex tstat labe
-> l  dec(2) tdec(2) eqdrop(/) keep(*)
-D:\Research\gamification_investor_behavior\tables\main_table_3.tex
+. outreg2 using "`directory'/tables/main_table_3.tex", r2 append tex tstat label  dec(2) tdec(2
+> ) eqdrop(/) keep(*)
+/Users/chapkovski/Documents/gamification_investor_behavior/tables/main_table_3.tex
 dir : seeout
 
-. reghdfe prefer_gamified  `controls' if playerinner_name=="s3", noabsorb vce(c
-> l participant_code)
+. reghdfe prefer_gamified  `controls' if playerinner_name=="s3", noabsorb vce(cl participant_co
+> de)
 (MWFE estimator converged in 1 iterations)
 
 HDFE Linear regression                            Number of obs   =        148
@@ -173,29 +171,29 @@ Statistics robust to heteroskedasticity           Prob > F        =     0.3068
                                                   Within R-sq.    =     0.0657
 Number of clusters (participant_code) =        148Root MSE        =     0.4921
 
-                     (Std. err. adjusted for 148 clusters in participant_code)
-------------------------------------------------------------------------------
-             |               Robust
-prefer_gam~d | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
--------------+----------------------------------------------------------------
- finquiz_std |  -.0999962   .0497868    -2.01   0.047    -.1984335    -.001559
-     age_std |  -.0222324   .0659682    -0.34   0.737    -.1526633    .1081984
-    d_gender |   .0509918   .0882636     0.58   0.564    -.1235209    .2255045
-finknowled~d |    .033985   .0516464     0.66   0.512    -.0681292    .1360991
-playertrad~e |  -.0248676   .0973225    -0.26   0.799    -.2172914    .1675563
-playercour~l |   .0460907   .1112664     0.41   0.679    -.1739027    .2660841
-prediction~d |  -.0673081   .0423058    -1.59   0.114    -.1509542     .016338
- diff_payoff |  -.0193485     .03642    -0.53   0.596    -.0913574    .0526604
-       _cons |   .3966944   .0843876     4.70   0.000     .2298451    .5635438
-------------------------------------------------------------------------------
+                                     (Std. err. adjusted for 148 clusters in participant_code)
+----------------------------------------------------------------------------------------------
+                             |               Robust
+             prefer_gamified | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-----------------------------+----------------------------------------------------------------
+                 finquiz_std |  -.0999962   .0497868    -2.01   0.047    -.1984335    -.001559
+                     age_std |  -.0222324   .0659682    -0.34   0.737    -.1526633    .1081984
+                    d_gender |   .0509918   .0882636     0.58   0.564    -.1235209    .2255045
+            finknowledge_std |    .033985   .0516464     0.66   0.512    -.0681292    .1360991
+    playertrading_experience |  -.0248676   .0973225    -0.26   0.799    -.2172914    .1675563
+      playercourse_financial |   .0460907   .1112664     0.41   0.679    -.1739027    .2660841
+prediction_accuracy_mean_std |  -.0673081   .0423058    -1.59   0.114    -.1509542     .016338
+                 diff_payoff |  -.0193485     .03642    -0.53   0.596    -.0913574    .0526604
+                       _cons |   .3966944   .0843876     4.70   0.000     .2298451    .5635438
+----------------------------------------------------------------------------------------------
 
-. outreg2 using "`directory'\tables\main_table_3.tex", r2 append tex tstat labe
-> l  dec(2) tdec(2) eqdrop(/) keep(*)
-D:\Research\gamification_investor_behavior\tables\main_table_3.tex
+. outreg2 using "`directory'/tables/main_table_3.tex", r2 append tex tstat label  dec(2) tdec(2
+> ) eqdrop(/) keep(*)
+/Users/chapkovski/Documents/gamification_investor_behavior/tables/main_table_3.tex
 dir : seeout
 
-. reghdfe better_gamified  `controls' if playerinner_name=="s1", noabsorb vce(c
-> l participant_code)
+. reghdfe better_gamified  `controls' if playerinner_name=="s1", noabsorb vce(cl participant_co
+> de)
 (MWFE estimator converged in 1 iterations)
 
 HDFE Linear regression                            Number of obs   =        291
@@ -206,29 +204,29 @@ Statistics robust to heteroskedasticity           Prob > F        =     0.0682
                                                   Within R-sq.    =     0.0398
 Number of clusters (participant_code) =        291Root MSE        =     0.4887
 
-                     (Std. err. adjusted for 291 clusters in participant_code)
-------------------------------------------------------------------------------
-             |               Robust
-better_gam~d | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
--------------+----------------------------------------------------------------
- finquiz_std |  -.0664586   .0309149    -2.15   0.032    -.1273118   -.0056054
-     age_std |   .0608973   .0496213     1.23   0.221    -.0367778    .1585724
-    d_gender |   .0388963   .0599877     0.65   0.517    -.0791842    .1569767
-finknowled~d |   .0104828   .0340288     0.31   0.758    -.0564998    .0774655
-playertrad~e |   .0433993   .0666182     0.65   0.515    -.0877327    .1745314
-playercour~l |    .100816   .0840014     1.20   0.231    -.0645333    .2661654
-prediction~d |   .0023304   .0279881     0.08   0.934    -.0527617    .0574225
- diff_payoff |   .0599285   .0259736     2.31   0.022     .0088018    .1110553
-       _cons |   .3507926   .0566292     6.19   0.000     .2393231    .4622622
-------------------------------------------------------------------------------
+                                     (Std. err. adjusted for 291 clusters in participant_code)
+----------------------------------------------------------------------------------------------
+                             |               Robust
+             better_gamified | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-----------------------------+----------------------------------------------------------------
+                 finquiz_std |  -.0664586   .0309149    -2.15   0.032    -.1273118   -.0056054
+                     age_std |   .0608973   .0496213     1.23   0.221    -.0367778    .1585724
+                    d_gender |   .0388963   .0599877     0.65   0.517    -.0791842    .1569767
+            finknowledge_std |   .0104828   .0340288     0.31   0.758    -.0564998    .0774655
+    playertrading_experience |   .0433993   .0666182     0.65   0.515    -.0877327    .1745314
+      playercourse_financial |    .100816   .0840014     1.20   0.231    -.0645333    .2661654
+prediction_accuracy_mean_std |   .0023304   .0279881     0.08   0.934    -.0527617    .0574225
+                 diff_payoff |   .0599285   .0259736     2.31   0.022     .0088018    .1110553
+                       _cons |   .3507926   .0566292     6.19   0.000     .2393231    .4622622
+----------------------------------------------------------------------------------------------
 
-. outreg2 using "`directory'\tables\main_table_3.tex", r2 append tex tstat labe
-> l  dec(2) tdec(2) eqdrop(/) keep(*)
-D:\Research\gamification_investor_behavior\tables\main_table_3.tex
+. outreg2 using "`directory'/tables/main_table_3.tex", r2 append tex tstat label  dec(2) tdec(2
+> ) eqdrop(/) keep(*)
+/Users/chapkovski/Documents/gamification_investor_behavior/tables/main_table_3.tex
 dir : seeout
 
-. reghdfe better_gamified  `controls' if playerinner_name=="s2", noabsorb vce(c
-> l participant_code)
+. reghdfe better_gamified  `controls' if playerinner_name=="s2", noabsorb vce(cl participant_co
+> de)
 (MWFE estimator converged in 1 iterations)
 
 HDFE Linear regression                            Number of obs   =        297
@@ -239,29 +237,29 @@ Statistics robust to heteroskedasticity           Prob > F        =     0.6256
                                                   Within R-sq.    =     0.0140
 Number of clusters (participant_code) =        297Root MSE        =     0.4878
 
-                     (Std. err. adjusted for 297 clusters in participant_code)
-------------------------------------------------------------------------------
-             |               Robust
-better_gam~d | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
--------------+----------------------------------------------------------------
- finquiz_std |   .0091365   .0321737     0.28   0.777    -.0541889    .0724619
-     age_std |   .0111931   .0086281     1.30   0.196     -.005789    .0281753
-    d_gender |   .0472611   .0619981     0.76   0.447    -.0747657    .1692879
-finknowled~d |  -.0377929   .0336853    -1.12   0.263    -.1040935    .0285077
-playertrad~e |   .0316724   .0681096     0.47   0.642    -.1023834    .1657281
-playercour~l |   .0557811   .0810518     0.69   0.492    -.1037479    .2153101
-prediction~d |   .0116834   .0313752     0.37   0.710    -.0500705    .0734372
- diff_payoff |   .0335697   .0330274     1.02   0.310    -.0314359    .0985753
-       _cons |   .5723829   .0567594    10.08   0.000     .4606671    .6840987
-------------------------------------------------------------------------------
+                                     (Std. err. adjusted for 297 clusters in participant_code)
+----------------------------------------------------------------------------------------------
+                             |               Robust
+             better_gamified | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-----------------------------+----------------------------------------------------------------
+                 finquiz_std |   .0091365   .0321737     0.28   0.777    -.0541889    .0724619
+                     age_std |   .0111931   .0086281     1.30   0.196     -.005789    .0281753
+                    d_gender |   .0472611   .0619981     0.76   0.447    -.0747657    .1692879
+            finknowledge_std |  -.0377929   .0336853    -1.12   0.263    -.1040935    .0285077
+    playertrading_experience |   .0316724   .0681096     0.47   0.642    -.1023834    .1657281
+      playercourse_financial |   .0557811   .0810518     0.69   0.492    -.1037479    .2153101
+prediction_accuracy_mean_std |   .0116834   .0313752     0.37   0.710    -.0500705    .0734372
+                 diff_payoff |   .0335697   .0330274     1.02   0.310    -.0314359    .0985753
+                       _cons |   .5723829   .0567594    10.08   0.000     .4606671    .6840987
+----------------------------------------------------------------------------------------------
 
-. outreg2 using "`directory'\tables\main_table_3.tex", r2 append tex tstat labe
-> l  dec(2) tdec(2) eqdrop(/) keep(*)
-D:\Research\gamification_investor_behavior\tables\main_table_3.tex
+. outreg2 using "`directory'/tables/main_table_3.tex", r2 append tex tstat label  dec(2) tdec(2
+> ) eqdrop(/) keep(*)
+/Users/chapkovski/Documents/gamification_investor_behavior/tables/main_table_3.tex
 dir : seeout
 
-. reghdfe better_gamified  `controls' if playerinner_name=="s3", noabsorb vce(c
-> l participant_code)
+. reghdfe better_gamified  `controls' if playerinner_name=="s3", noabsorb vce(cl participant_co
+> de)
 (MWFE estimator converged in 1 iterations)
 
 HDFE Linear regression                            Number of obs   =        148
@@ -272,30 +270,29 @@ Statistics robust to heteroskedasticity           Prob > F        =     0.3935
                                                   Within R-sq.    =     0.0468
 Number of clusters (participant_code) =        148Root MSE        =     0.4918
 
-                     (Std. err. adjusted for 148 clusters in participant_code)
-------------------------------------------------------------------------------
-             |               Robust
-better_gam~d | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
--------------+----------------------------------------------------------------
- finquiz_std |  -.0869685   .0483266    -1.80   0.074    -.1825188    .0085818
-     age_std |   .0573074   .0650665     0.88   0.380    -.0713405    .1859554
-    d_gender |  -.0189966   .0866465    -0.22   0.827    -.1903121    .1523189
-finknowled~d |  -.0046099   .0477328    -0.10   0.923    -.0989861    .0897662
-playertrad~e |   .0070007   .0944777     0.07   0.941    -.1797986    .1937999
-playercour~l |   .0065576   .1096691     0.06   0.952    -.2102778    .2233929
-prediction~d |  -.0300084   .0408114    -0.74   0.463    -.1106997    .0506829
- diff_payoff |   .0448781    .036613     1.23   0.222    -.0275124    .1172686
-       _cons |   .3994963   .0820662     4.87   0.000     .2372369    .5617557
-------------------------------------------------------------------------------
+                                     (Std. err. adjusted for 148 clusters in participant_code)
+----------------------------------------------------------------------------------------------
+                             |               Robust
+             better_gamified | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-----------------------------+----------------------------------------------------------------
+                 finquiz_std |  -.0869685   .0483266    -1.80   0.074    -.1825188    .0085818
+                     age_std |   .0573074   .0650665     0.88   0.380    -.0713405    .1859554
+                    d_gender |  -.0189966   .0866465    -0.22   0.827    -.1903121    .1523189
+            finknowledge_std |  -.0046099   .0477328    -0.10   0.923    -.0989861    .0897662
+    playertrading_experience |   .0070007   .0944777     0.07   0.941    -.1797986    .1937999
+      playercourse_financial |   .0065576   .1096691     0.06   0.952    -.2102778    .2233929
+prediction_accuracy_mean_std |  -.0300084   .0408114    -0.74   0.463    -.1106997    .0506829
+                 diff_payoff |   .0448781    .036613     1.23   0.222    -.0275124    .1172686
+                       _cons |   .3994963   .0820662     4.87   0.000     .2372369    .5617557
+----------------------------------------------------------------------------------------------
 
-. outreg2 using "`directory'\tables\main_table_3.tex", r2 append tex tstat labe
-> l  dec(2) tdec(2) eqdrop(/) keep(*)
-D:\Research\gamification_investor_behavior\tables\main_table_3.tex
+. outreg2 using "`directory'/tables/main_table_3.tex", r2 append tex tstat label  dec(2) tdec(2
+> ) eqdrop(/) keep(*)
+/Users/chapkovski/Documents/gamification_investor_behavior/tables/main_table_3.tex
 dir : seeout
 
 . 
-. reghdfe option_value  `controls' if playerinner_name=="s1", noabsorb vce(cl p
-> articipant_code)
+. reghdfe option_value  `controls' if playerinner_name=="s1", noabsorb vce(cl participant_code)
 (MWFE estimator converged in 1 iterations)
 
 HDFE Linear regression                            Number of obs   =        291
@@ -306,29 +303,28 @@ Statistics robust to heteroskedasticity           Prob > F        =     0.7399
                                                   Within R-sq.    =     0.0161
 Number of clusters (participant_code) =        291Root MSE        =     0.4657
 
-                     (Std. err. adjusted for 291 clusters in participant_code)
-------------------------------------------------------------------------------
-             |               Robust
-option_value | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
--------------+----------------------------------------------------------------
- finquiz_std |   -.020232   .0311226    -0.65   0.516    -.0814941    .0410301
-     age_std |  -.0381205   .0508704    -0.75   0.454    -.1382544    .0620134
-    d_gender |   .0710818   .0589513     1.21   0.229    -.0449586    .1871222
-finknowled~d |   .0245446   .0315536     0.78   0.437    -.0375658     .086655
-playertrad~e |  -.0099834   .0643334    -0.16   0.877     -.136618    .1166513
-playercour~l |  -.0387825   .0825919    -0.47   0.639    -.2013575    .1237925
-prediction~d |  -.0317168   .0278763    -1.14   0.256    -.0865888    .0231552
- diff_payoff |   .0048499   .0230134     0.21   0.833      -.04045    .0501499
-       _cons |   .6623262   .0560416    11.82   0.000     .5520133    .7726391
-------------------------------------------------------------------------------
+                                     (Std. err. adjusted for 291 clusters in participant_code)
+----------------------------------------------------------------------------------------------
+                             |               Robust
+                option_value | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-----------------------------+----------------------------------------------------------------
+                 finquiz_std |   -.020232   .0311226    -0.65   0.516    -.0814941    .0410301
+                     age_std |  -.0381205   .0508704    -0.75   0.454    -.1382544    .0620134
+                    d_gender |   .0710818   .0589513     1.21   0.229    -.0449586    .1871222
+            finknowledge_std |   .0245446   .0315536     0.78   0.437    -.0375658     .086655
+    playertrading_experience |  -.0099834   .0643334    -0.16   0.877     -.136618    .1166513
+      playercourse_financial |  -.0387825   .0825919    -0.47   0.639    -.2013575    .1237925
+prediction_accuracy_mean_std |  -.0317168   .0278763    -1.14   0.256    -.0865888    .0231552
+                 diff_payoff |   .0048499   .0230134     0.21   0.833      -.04045    .0501499
+                       _cons |   .6623262   .0560416    11.82   0.000     .5520133    .7726391
+----------------------------------------------------------------------------------------------
 
-. outreg2 using "`directory'\tables\main_table_3.tex", r2 append tex tstat labe
-> l  dec(2) tdec(2) eqdrop(/) keep(*)
-D:\Research\gamification_investor_behavior\tables\main_table_3.tex
+. outreg2 using "`directory'/tables/main_table_3.tex", r2 append tex tstat label  dec(2) tdec(2
+> ) eqdrop(/) keep(*)
+/Users/chapkovski/Documents/gamification_investor_behavior/tables/main_table_3.tex
 dir : seeout
 
-. reghdfe option_value  `controls' if playerinner_name=="s2", noabsorb vce(cl p
-> articipant_code)
+. reghdfe option_value  `controls' if playerinner_name=="s2", noabsorb vce(cl participant_code)
 (MWFE estimator converged in 1 iterations)
 
 HDFE Linear regression                            Number of obs   =        297
@@ -339,25 +335,25 @@ Statistics robust to heteroskedasticity           Prob > F        =     0.6823
                                                   Within R-sq.    =     0.0187
 Number of clusters (participant_code) =        297Root MSE        =     0.3794
 
-                     (Std. err. adjusted for 297 clusters in participant_code)
-------------------------------------------------------------------------------
-             |               Robust
-option_value | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
--------------+----------------------------------------------------------------
- finquiz_std |  -.0132594   .0243445    -0.54   0.586    -.0611751    .0346562
-     age_std |  -.0093358    .013964    -0.67   0.504    -.0368202    .0181486
-    d_gender |   .0384699   .0457043     0.84   0.401    -.0514869    .1284268
-finknowled~d |  -.0299362   .0265265    -1.13   0.260    -.0821466    .0222742
-playertrad~e |     .03537   .0542258     0.65   0.515    -.0713591     .142099
-playercour~l |    .024811   .0632475     0.39   0.695    -.0996749    .1492969
-prediction~d |    .016504   .0219413     0.75   0.453    -.0266816    .0596896
- diff_payoff |   .0254135   .0213824     1.19   0.236    -.0166721     .067499
-       _cons |   .7836663   .0467658    16.76   0.000     .6916201    .8757125
-------------------------------------------------------------------------------
+                                     (Std. err. adjusted for 297 clusters in participant_code)
+----------------------------------------------------------------------------------------------
+                             |               Robust
+                option_value | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-----------------------------+----------------------------------------------------------------
+                 finquiz_std |  -.0132594   .0243445    -0.54   0.586    -.0611751    .0346562
+                     age_std |  -.0093358    .013964    -0.67   0.504    -.0368202    .0181486
+                    d_gender |   .0384699   .0457043     0.84   0.401    -.0514869    .1284268
+            finknowledge_std |  -.0299362   .0265265    -1.13   0.260    -.0821466    .0222742
+    playertrading_experience |     .03537   .0542258     0.65   0.515    -.0713591     .142099
+      playercourse_financial |    .024811   .0632475     0.39   0.695    -.0996749    .1492969
+prediction_accuracy_mean_std |    .016504   .0219413     0.75   0.453    -.0266816    .0596896
+                 diff_payoff |   .0254135   .0213824     1.19   0.236    -.0166721     .067499
+                       _cons |   .7836663   .0467658    16.76   0.000     .6916201    .8757125
+----------------------------------------------------------------------------------------------
 
-. outreg2 using "`directory'\tables\main_table_3.tex", r2 append tex tstat labe
-> l  dec(2) tdec(2) eqdrop(/) keep(*)
-D:\Research\gamification_investor_behavior\tables\main_table_3.tex
+. outreg2 using "`directory'/tables/main_table_3.tex", r2 append tex tstat label  dec(2) tdec(2
+> ) eqdrop(/) keep(*)
+/Users/chapkovski/Documents/gamification_investor_behavior/tables/main_table_3.tex
 dir : seeout
 
 . 
@@ -380,14 +376,13 @@ playersr_~es | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
        _cons |   2.900704   .0621964    46.64   0.000     2.778493    3.022916
 ------------------------------------------------------------------------------
 
-. outreg2 using "`directory'\tables\appendix_table_H1.tex", adjr2 replace tex t
-> stat label  dec(2) tdec(2) eqdrop(/) keep(*)
-D:\Research\gamification_investor_behavior\tables\appendix_table_H1.tex
+. outreg2 using "`directory'/tables/appendix_table_H1.tex", adjr2 replace tex tstat label  dec(
+> 2) tdec(2) eqdrop(/) keep(*)
+/Users/chapkovski/Documents/gamification_investor_behavior/tables/appendix_table_H1.tex
 dir : seeout
 
-. reg playersr_badges finquiz_std age_std d_gender finknowledge_std playertradi
-> ng_experience playercourse_financial prediction_accuracy_mean_std diff_payoff
-> , vce(cl participant_code)
+. reg playersr_badges finquiz_std age_std d_gender finknowledge_std playertrading_experience pl
+> ayercourse_financial prediction_accuracy_mean_std diff_payoff, vce(cl participant_code)
 
 Linear regression                               Number of obs     =        439
                                                 F(8, 438)         =       4.26
@@ -395,25 +390,25 @@ Linear regression                               Number of obs     =        439
                                                 R-squared         =     0.0722
                                                 Root MSE          =     1.3685
 
-                     (Std. err. adjusted for 439 clusters in participant_code)
-------------------------------------------------------------------------------
-             |               Robust
-playersr_~es | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
--------------+----------------------------------------------------------------
- finquiz_std |  -.3173599    .076054    -4.17   0.000     -.466836   -.1678838
-     age_std |   .0477603   .1141702     0.42   0.676    -.1766293    .2721499
-    d_gender |   .2035528   .1322185     1.54   0.124    -.0563087    .4634143
-finknowled~d |   .0174254   .0797398     0.22   0.827    -.1392949    .1741456
-playertrad~e |  -.1008883   .1509515    -0.67   0.504    -.3975677    .1957911
-playercour~l |    .040964   .1942027     0.21   0.833     -.340721     .422649
-prediction~d |  -.0632297   .0675899    -0.94   0.350    -.1960706    .0696111
- diff_payoff |   .0833944   .0599324     1.39   0.165    -.0343964    .2011852
-       _cons |   2.852085   .1262661    22.59   0.000     2.603922    3.100247
-------------------------------------------------------------------------------
+                                     (Std. err. adjusted for 439 clusters in participant_code)
+----------------------------------------------------------------------------------------------
+                             |               Robust
+             playersr_badges | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-----------------------------+----------------------------------------------------------------
+                 finquiz_std |  -.3173599    .076054    -4.17   0.000     -.466836   -.1678838
+                     age_std |   .0477603   .1141702     0.42   0.676    -.1766293    .2721499
+                    d_gender |   .2035528   .1322185     1.54   0.124    -.0563087    .4634143
+            finknowledge_std |   .0174254   .0797398     0.22   0.827    -.1392949    .1741456
+    playertrading_experience |  -.1008883   .1509515    -0.67   0.504    -.3975677    .1957911
+      playercourse_financial |    .040964   .1942027     0.21   0.833     -.340721     .422649
+prediction_accuracy_mean_std |  -.0632297   .0675899    -0.94   0.350    -.1960706    .0696111
+                 diff_payoff |   .0833944   .0599324     1.39   0.165    -.0343964    .2011852
+                       _cons |   2.852085   .1262661    22.59   0.000     2.603922    3.100247
+----------------------------------------------------------------------------------------------
 
-. outreg2 using "`directory'\tables\appendix_table_H1.tex", adjr2 append tex ts
-> tat label  dec(2) tdec(2) eqdrop(/) keep(*)
-D:\Research\gamification_investor_behavior\tables\appendix_table_H1.tex
+. outreg2 using "`directory'/tables/appendix_table_H1.tex", adjr2 append tex tstat label  dec(2
+> ) tdec(2) eqdrop(/) keep(*)
+/Users/chapkovski/Documents/gamification_investor_behavior/tables/appendix_table_H1.tex
 dir : seeout
 
 . reg playersr_confetti finquiz_std, vce(cl participant_code)
@@ -433,14 +428,13 @@ playersr_c~i | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
        _cons |   2.712883   .0664813    40.81   0.000     2.582252    2.843515
 ------------------------------------------------------------------------------
 
-. outreg2 using "`directory'\tables\appendix_table_H1.tex", adjr2 append tex ts
-> tat label  dec(2) tdec(2) eqdrop(/) keep(*)
-D:\Research\gamification_investor_behavior\tables\appendix_table_H1.tex
+. outreg2 using "`directory'/tables/appendix_table_H1.tex", adjr2 append tex tstat label  dec(2
+> ) tdec(2) eqdrop(/) keep(*)
+/Users/chapkovski/Documents/gamification_investor_behavior/tables/appendix_table_H1.tex
 dir : seeout
 
-. reg playersr_confetti finquiz_std age_std d_gender finknowledge_std playertra
-> ding_experience playercourse_financial prediction_accuracy_mean_std diff_payo
-> ff, vce(cl participant_code)
+. reg playersr_confetti finquiz_std age_std d_gender finknowledge_std playertrading_experience 
+> playercourse_financial prediction_accuracy_mean_std diff_payoff, vce(cl participant_code)
 
 Linear regression                               Number of obs     =        439
                                                 F(8, 438)         =       4.73
@@ -448,25 +442,25 @@ Linear regression                               Number of obs     =        439
                                                 R-squared         =     0.0742
                                                 Root MSE          =     1.4324
 
-                     (Std. err. adjusted for 439 clusters in participant_code)
-------------------------------------------------------------------------------
-             |               Robust
-playersr_c~i | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
--------------+----------------------------------------------------------------
- finquiz_std |  -.3374981   .0748165    -4.51   0.000     -.484542   -.1904542
-     age_std |   .2011356   .1199787     1.68   0.094    -.0346699    .4369412
-    d_gender |   .2732443   .1375458     1.99   0.048     .0029126     .543576
-finknowled~d |   .0596046   .0873963     0.68   0.496    -.1121635    .2313728
-playertrad~e |  -.0596784   .1582684    -0.38   0.706    -.3707382    .2513814
-playercour~l |   .3113393   .1908082     1.63   0.103    -.0636742    .6863527
-prediction~d |  -.1151622   .0690819    -1.67   0.096    -.2509354    .0206109
- diff_payoff |   .0730009   .0623767     1.17   0.243    -.0495938    .1955957
-       _cons |   2.571213   .1330204    19.33   0.000     2.309775     2.83265
-------------------------------------------------------------------------------
+                                     (Std. err. adjusted for 439 clusters in participant_code)
+----------------------------------------------------------------------------------------------
+                             |               Robust
+           playersr_confetti | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-----------------------------+----------------------------------------------------------------
+                 finquiz_std |  -.3374981   .0748165    -4.51   0.000     -.484542   -.1904542
+                     age_std |   .2011356   .1199787     1.68   0.094    -.0346699    .4369412
+                    d_gender |   .2732443   .1375458     1.99   0.048     .0029126     .543576
+            finknowledge_std |   .0596046   .0873963     0.68   0.496    -.1121635    .2313728
+    playertrading_experience |  -.0596784   .1582684    -0.38   0.706    -.3707382    .2513814
+      playercourse_financial |   .3113393   .1908082     1.63   0.103    -.0636742    .6863527
+prediction_accuracy_mean_std |  -.1151622   .0690819    -1.67   0.096    -.2509354    .0206109
+                 diff_payoff |   .0730009   .0623767     1.17   0.243    -.0495938    .1955957
+                       _cons |   2.571213   .1330204    19.33   0.000     2.309775     2.83265
+----------------------------------------------------------------------------------------------
 
-. outreg2 using "`directory'\tables\appendix_table_H1.tex", adjr2 append tex ts
-> tat label  dec(2) tdec(2) eqdrop(/) keep(*)
-D:\Research\gamification_investor_behavior\tables\appendix_table_H1.tex
+. outreg2 using "`directory'/tables/appendix_table_H1.tex", adjr2 append tex tstat label  dec(2
+> ) tdec(2) eqdrop(/) keep(*)
+/Users/chapkovski/Documents/gamification_investor_behavior/tables/appendix_table_H1.tex
 dir : seeout
 
 . reg playersr_notifications finquiz_std, vce(cl participant_code)
@@ -486,14 +480,14 @@ playersr_n~s | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
        _cons |   3.724198   .0461106    80.77   0.000     3.633649    3.814746
 ------------------------------------------------------------------------------
 
-. outreg2 using "`directory'\tables\appendix_table_H1.tex", adjr2 append tex ts
-> tat label  dec(2) tdec(2) eqdrop(/) keep(*)
-D:\Research\gamification_investor_behavior\tables\appendix_table_H1.tex
+. outreg2 using "`directory'/tables/appendix_table_H1.tex", adjr2 append tex tstat label  dec(2
+> ) tdec(2) eqdrop(/) keep(*)
+/Users/chapkovski/Documents/gamification_investor_behavior/tables/appendix_table_H1.tex
 dir : seeout
 
-. reg playersr_notifications finquiz_std age_std d_gender finknowledge_std play
-> ertrading_experience playercourse_financial prediction_accuracy_mean_std diff
-> _payoff, vce(cl participant_code)
+. reg playersr_notifications finquiz_std age_std d_gender finknowledge_std playertrading_experi
+> ence playercourse_financial prediction_accuracy_mean_std diff_payoff, vce(cl participant_code
+> )
 
 Linear regression                               Number of obs     =        593
                                                 F(8, 592)         =       2.03
@@ -501,25 +495,25 @@ Linear regression                               Number of obs     =        593
                                                 R-squared         =     0.0239
                                                 Root MSE          =     1.1548
 
-                     (Std. err. adjusted for 593 clusters in participant_code)
-------------------------------------------------------------------------------
-             |               Robust
-playersr_n~s | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
--------------+----------------------------------------------------------------
- finquiz_std |  -.0178321   .0511818    -0.35   0.728    -.1183522    .0826879
-     age_std |   .0234192   .0231648     1.01   0.312     -.022076    .0689145
-    d_gender |    .153549   .0975859     1.57   0.116    -.0381077    .3452058
-finknowled~d |   .0644308   .0552796     1.17   0.244    -.0441372    .1729989
-playertrad~e |  -.1456139   .1128065    -1.29   0.197    -.3671636    .0759358
-playercour~l |   .2131704   .1425952     1.49   0.135    -.0668836    .4932244
-prediction~d |  -.1009283   .0475602    -2.12   0.034    -.1943356    -.007521
- diff_payoff |   .0932796   .0483423     1.93   0.054    -.0016637    .1882229
-       _cons |   3.691497    .088873    41.54   0.000     3.516952    3.866042
-------------------------------------------------------------------------------
+                                     (Std. err. adjusted for 593 clusters in participant_code)
+----------------------------------------------------------------------------------------------
+                             |               Robust
+      playersr_notifications | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-----------------------------+----------------------------------------------------------------
+                 finquiz_std |  -.0178321   .0511818    -0.35   0.728    -.1183522    .0826879
+                     age_std |   .0234192   .0231648     1.01   0.312     -.022076    .0689145
+                    d_gender |    .153549   .0975859     1.57   0.116    -.0381077    .3452058
+            finknowledge_std |   .0644308   .0552796     1.17   0.244    -.0441372    .1729989
+    playertrading_experience |  -.1456139   .1128065    -1.29   0.197    -.3671636    .0759358
+      playercourse_financial |   .2131704   .1425952     1.49   0.135    -.0668836    .4932244
+prediction_accuracy_mean_std |  -.1009283   .0475602    -2.12   0.034    -.1943356    -.007521
+                 diff_payoff |   .0932796   .0483423     1.93   0.054    -.0016637    .1882229
+                       _cons |   3.691497    .088873    41.54   0.000     3.516952    3.866042
+----------------------------------------------------------------------------------------------
 
-. outreg2 using "`directory'\tables\appendix_table_H1.tex", adjr2 append tex ts
-> tat label  dec(2) tdec(2) eqdrop(/) keep(*)
-D:\Research\gamification_investor_behavior\tables\appendix_table_H1.tex
+. outreg2 using "`directory'/tables/appendix_table_H1.tex", adjr2 append tex tstat label  dec(2
+> ) tdec(2) eqdrop(/) keep(*)
+/Users/chapkovski/Documents/gamification_investor_behavior/tables/appendix_table_H1.tex
 dir : seeout
 
 . 

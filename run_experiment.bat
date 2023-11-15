@@ -1,4 +1,4 @@
-@echo off
+echo off
 cd code
 
 echo Selecting main experiment data (select_sample.py 0)
@@ -47,3 +47,5 @@ python execute_stata.py "regression_robustness_H2_H6.do"
 
 echo Generate tables with jack-knife samples for financial quiz questions (Table H.7)
 python execute_stata.py "regression_quiz_jackknife.do"
+
+cd ..

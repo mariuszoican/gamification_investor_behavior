@@ -2,8 +2,37 @@
 ## Experimental replication package
 
 ### General instructions
-* You need to set up your local Stata path in `conf/config.yaml` to run the regressions.
-* The executable file `run_experiment.bat` executes all following code in order and generates all Tables and Figures in the paper. 
+
+### General Instructions
+
+To run the experiments and generate all Tables and Figures in the paper, follow these setup instructions based on your operating system:
+
+#### For Windows Users:
+1. **Set Up Stata Path**: Ensure your local Stata path is correctly set up in `conf/config.yaml`. For Windows, it should look like this (uncomment this line and comment out the Mac path):
+   ```yaml
+   # Stata path for windows
+   stata_path: "C:/Program Files/Stata17/StataMP-64.exe"
+   ```
+2. **Run the Experiment**: Use the executable file `run_experiment.bat` to execute all code in order. This script generates all Tables and Figures.
+
+#### For macOS and Ubuntu Users:
+1. **Set Up Stata Path**: Update your local Stata path in `conf/config.yaml`. For macOS, uncomment the relevant line and comment out the Windows path. Adjust the path based on your Stata version (e.g., StataSE, StataMP):
+   ```yaml
+   # Stata path for mac
+   # You may need to change from StataSE to StataMP depending on your version
+   stata_path: "/Applications/Stata/StataSE.app/Contents/MacOS/StataSE"
+   ```
+2. **Make the Script Executable (if needed)**: Before running the script for the first time, make it executable by running:
+   ```
+   chmod +x ./run_experiment.sh
+   ```
+3. **Run the Experiment**: Execute the script `run_experiment.sh` using:
+   ```
+   ./run_experiment.sh
+   ```
+   This script will execute all code in order and generate all Tables and Figures.
+
+Note: Ensure that the paths specified in `config.yaml` correctly match the location of your Stata installation. 
 * All required raw data is in the `raw_data_dump` folder. You can safely empty the following folders before running the code:
   * `data_processed`, `data_prolific`, `figures`, and `tables`.
     

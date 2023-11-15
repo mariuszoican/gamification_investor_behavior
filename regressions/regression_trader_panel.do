@@ -6,7 +6,7 @@ set more off
 cd ..
 local directory : pwd
 display "`working_dir'"
-import delimited "`directory'\data_processed\self_reflection"
+import delimited "`directory'/data_processed/self_reflection"
 
 egen age_std=std(playerage)
 gen d_gender=(playergender=="Female")
@@ -36,34 +36,34 @@ local controls finquiz_std age_std d_gender finknowledge_std playertrading_exper
 
 // Table 3
 reghdfe prefer_gamified  `controls' if playerinner_name=="s1", noabsorb vce(cl participant_code)
-outreg2 using "`directory'\tables\main_table_3.tex", r2 replace tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
+outreg2 using "`directory'/tables/main_table_3.tex", r2 replace tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
 reghdfe prefer_gamified  `controls' if playerinner_name=="s2", noabsorb vce(cl participant_code)
-outreg2 using "`directory'\tables\main_table_3.tex", r2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
+outreg2 using "`directory'/tables/main_table_3.tex", r2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
 reghdfe prefer_gamified  `controls' if playerinner_name=="s3", noabsorb vce(cl participant_code)
-outreg2 using "`directory'\tables\main_table_3.tex", r2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
+outreg2 using "`directory'/tables/main_table_3.tex", r2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
 reghdfe better_gamified  `controls' if playerinner_name=="s1", noabsorb vce(cl participant_code)
-outreg2 using "`directory'\tables\main_table_3.tex", r2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
+outreg2 using "`directory'/tables/main_table_3.tex", r2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
 reghdfe better_gamified  `controls' if playerinner_name=="s2", noabsorb vce(cl participant_code)
-outreg2 using "`directory'\tables\main_table_3.tex", r2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
+outreg2 using "`directory'/tables/main_table_3.tex", r2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
 reghdfe better_gamified  `controls' if playerinner_name=="s3", noabsorb vce(cl participant_code)
-outreg2 using "`directory'\tables\main_table_3.tex", r2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
+outreg2 using "`directory'/tables/main_table_3.tex", r2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
 
 reghdfe option_value  `controls' if playerinner_name=="s1", noabsorb vce(cl participant_code)
-outreg2 using "`directory'\tables\main_table_3.tex", r2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
+outreg2 using "`directory'/tables/main_table_3.tex", r2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
 reghdfe option_value  `controls' if playerinner_name=="s2", noabsorb vce(cl participant_code)
-outreg2 using "`directory'\tables\main_table_3.tex", r2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
+outreg2 using "`directory'/tables/main_table_3.tex", r2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
 
 
 // Appendix Table H.1
 reg playersr_badges finquiz_std, vce(cl participant_code)
-outreg2 using "`directory'\tables\appendix_table_H1.tex", adjr2 replace tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
+outreg2 using "`directory'/tables/appendix_table_H1.tex", adjr2 replace tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
 reg playersr_badges finquiz_std age_std d_gender finknowledge_std playertrading_experience playercourse_financial prediction_accuracy_mean_std diff_payoff, vce(cl participant_code)
-outreg2 using "`directory'\tables\appendix_table_H1.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
+outreg2 using "`directory'/tables/appendix_table_H1.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
 reg playersr_confetti finquiz_std, vce(cl participant_code)
-outreg2 using "`directory'\tables\appendix_table_H1.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
+outreg2 using "`directory'/tables/appendix_table_H1.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
 reg playersr_confetti finquiz_std age_std d_gender finknowledge_std playertrading_experience playercourse_financial prediction_accuracy_mean_std diff_payoff, vce(cl participant_code)
-outreg2 using "`directory'\tables\appendix_table_H1.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
+outreg2 using "`directory'/tables/appendix_table_H1.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
 reg playersr_notifications finquiz_std, vce(cl participant_code)
-outreg2 using "`directory'\tables\appendix_table_H1.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
+outreg2 using "`directory'/tables/appendix_table_H1.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
 reg playersr_notifications finquiz_std age_std d_gender finknowledge_std playertrading_experience playercourse_financial prediction_accuracy_mean_std diff_payoff, vce(cl participant_code)
-outreg2 using "`directory'\tables\appendix_table_H1.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
+outreg2 using "`directory'/tables/appendix_table_H1.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)

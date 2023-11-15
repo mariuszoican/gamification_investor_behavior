@@ -6,7 +6,7 @@ set more off
 cd ..
 local directory : pwd
 display "`working_dir'"
-import delimited "`directory'\data_processed\panel_tick_data"
+import delimited "`directory'/data_processed/panel_tick_data"
 
 // encode experimental session
 encode playerinner_name, generate(exp_session)
@@ -58,19 +58,19 @@ label variable capital_gains_std "Capital gains"
 
 
 reghdfe dbuy green_alert green_alert_game red_alert red_alert_game filtered_prob_std  gamified `controls' if playerinner_name =="s2" & position_lag==0, absorb(round_number) vce(cl participant_code)
-outreg2 using "`directory'\tables\main_table_6.tex", adjr2 replace tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
+outreg2 using "`directory'/tables/main_table_6.tex", adjr2 replace tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
 reghdfe dsell green_alert green_alert_game red_alert red_alert_game filtered_prob_std capital_gains_std gamified if playerinner_name =="s2" & position_lag==1, absorb(participant_code round_number) vce(cl participant_code)
-outreg2 using "`directory'\tables\main_table_6.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
+outreg2 using "`directory'/tables/main_table_6.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
 
 reghdfe dbuy green_alert green_alert_game red_alert red_alert_game filtered_prob_std  gamified `controls2' if playerinner_name =="s2" & prediction_accuracy==1 & position_lag==0, absorb(round_number) vce(cl participant_code)
-outreg2 using "`directory'\tables\main_table_6.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
+outreg2 using "`directory'/tables/main_table_6.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
 reghdfe dsell green_alert green_alert_game red_alert red_alert_game filtered_prob_std  capital_gains_std `controls2' gamified    if playerinner_name =="s2" & prediction_accuracy==1 & position_lag==1, absorb(round_number) vce(cl participant_code)
-outreg2 using "`directory'\tables\main_table_6.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
+outreg2 using "`directory'/tables/main_table_6.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
 
 reghdfe dbuy green_alert green_alert_game red_alert red_alert_game filtered_prob_std  gamified `controls' if playerinner_name =="s2" & prediction_accuracy<1 & position_lag==0, absorb(round_number) vce(cl participant_code)
-outreg2 using "`directory'\tables\main_table_6.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
+outreg2 using "`directory'/tables/main_table_6.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
 reghdfe dsell green_alert green_alert_game red_alert red_alert_game filtered_prob_std  capital_gains_std `controls' gamified    if playerinner_name =="s2" & prediction_accuracy<1 & position_lag==1, absorb(round_number) vce(cl participant_code)
-outreg2 using "`directory'\tables\main_table_6.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
+outreg2 using "`directory'/tables/main_table_6.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
 
 
 
@@ -102,16 +102,16 @@ local interactions green_alert_s2 green_alert_s4 red_alert_s2 red_alert_s4 green
 
 
 reghdfe dbuy `interactions'  filtered_prob_std  gamified `controls' if ((playerinner_name =="s2") | (playerinner_name =="s4")) & position_lag==0, absorb(round_number) vce(cl participant_code)
-outreg2 using "`directory'\tables\appendix_table_F7.tex", adjr2 replace tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
+outreg2 using "`directory'/tables/appendix_table_F7.tex", adjr2 replace tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
 reghdfe dsell `interactions' filtered_prob_std  capital_gains_std `controls' gamified    if ((playerinner_name =="s2") | (playerinner_name =="s4")) & position_lag==1, absorb(round_number) vce(cl participant_code)
-outreg2 using "`directory'\tables\appendix_table_F7.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
+outreg2 using "`directory'/tables/appendix_table_F7.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
 
 reghdfe dbuy `interactions'  filtered_prob_std  gamified `controls2' if ((playerinner_name =="s2") | (playerinner_name =="s4")) & position_lag==0 & prediction_accuracy==1, absorb(round_number) vce(cl participant_code)
-outreg2 using "`directory'\tables\appendix_table_F7.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
+outreg2 using "`directory'/tables/appendix_table_F7.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
 reghdfe dsell `interactions' filtered_prob_std  capital_gains_std `controls2' gamified    if ((playerinner_name =="s2") | (playerinner_name =="s4")) & position_lag==1 & prediction_accuracy==1, absorb(round_number) vce(cl participant_code)
-outreg2 using "`directory'\tables\appendix_table_F7.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
+outreg2 using "`directory'/tables/appendix_table_F7.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
 
 reghdfe dbuy `interactions'  filtered_prob_std  gamified `controls' if ((playerinner_name =="s2") | (playerinner_name =="s4")) & position_lag==0 & prediction_accuracy<1, absorb(round_number) vce(cl participant_code)
-outreg2 using "`directory'\tables\appendix_table_F7.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
+outreg2 using "`directory'/tables/appendix_table_F7.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
 reghdfe dsell `interactions' filtered_prob_std  capital_gains_std `controls' gamified    if ((playerinner_name =="s2") | (playerinner_name =="s4")) & position_lag==1 & prediction_accuracy<1, absorb(round_number) vce(cl participant_code)
-outreg2 using "`directory'\tables\appendix_table_F7.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
+outreg2 using "`directory'/tables/appendix_table_F7.tex", adjr2 append tex tstat label  dec(2) tdec(2) eqdrop(/) keep(*)
