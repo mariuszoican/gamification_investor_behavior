@@ -12,29 +12,30 @@
 
 4. **PageTimes-2023-04-13.csv**: 
    - Description: Standard oTree output file tracking the amount of time each participant spent on each page. Not used in the current analysis.
-
 5. **post_experimental_2023-04-13_custom.csv**: 
-   - Description: TODO
+   - Description: Contains individual responses to the financial quiz, merged with demographic data such as age, gender, and education.
 
 6. **post_experimental_2023-04-13.csv**: 
-   - Description: TODO
+   - Description: Includes all demographic and financial experience data, as well as open-ended responses about the participants' perceived purpose of the study and any difficulties they encountered.
 
 7. **pretrade_2023-04-13.csv**: 
-   - Description: TODO
+   - Description: Encompasses fields related to participant consent, control questions, and questions assessing initial financial familiarity.
 
 8. **prolific_export_demographic_uk.csv**: 
-   - Description: TODO
+   - Description: This file contains demographic information of Prolific users from *the United Kingdom* who participated in the study. It  includes data such as age, sex, fluency in languages etc.
 
 9. **prolific_export_demographic_us.csv**: 
-   - Description: TODO
+   - Description: This file contains demographic information of Prolific users from *the United States* who participated in the study. It  includes data such as age, sex, fluency in languages etc.
 
-10. **seed_markov.pickle**: 
-    - Description: TODO
 
-11. **trader_wrapper_2023-04-13_simple.csv**: 
-    - Description: TODO
+8. **seed_markov.pickle**: 
+   - Description: This pickle file contains a serialized seed state for random number generation. It is used to ensure replicability in simulations of price chart.
 
-12. **trader_wrapper_2023-04-13.csv**: 
-    - Description: TODO
+9. **trader_wrapper_2023-04-13.csv**: 
+    - Description: Contains content identical to events_04_13_2023_00_46_00.csv, documenting all events but with some less relevant columns removed for brevity.
+
+10. **trader_wrapper_2023-04-13_simple.csv**: 
+    - Description: Features standard oTree-formatted long-form data from the trader_wrapper app. It includes details of treatments and blocks assigned to participants in each round, their payoffs per round, and the prices shown on the trading platform.
+
 
 **Note**: In all oTree-generated raw data files, `participant.label` (when not null) refers to the Prolific user ID. These oTree data should be merged with Prolific demographic data using these IDs. Criteria used to filter out completed submissions include: `participant.label` != None, `participant._current_page_name` == 'FinalForProlific', and `session.is_demo` == False.
