@@ -12,8 +12,11 @@
 
 4. **PageTimes-2023-04-13.csv**: 
    - Description: Standard oTree output file tracking the amount of time each participant spent on each page. Not used in the current analysis.
+   
 5. **post_experimental_2023-04-13_custom.csv**: 
-   - Description: Contains individual responses to the financial quiz, merged with demographic data such as age, gender, and education.
+   - Description: Contains individual responses to the financial quiz, merged with demographic data such as age, gender, and education. 
+   **Attention**: no column names are embedded. Column names are: Question Label, Answer, Participant Code, Session Code, Session Display Name,  Age,  Gender,  Education
+
 
 6. **post_experimental_2023-04-13.csv**: 
    - Description: Includes all demographic and financial experience data, as well as open-ended responses about the participants' perceived purpose of the study and any difficulties they encountered.
